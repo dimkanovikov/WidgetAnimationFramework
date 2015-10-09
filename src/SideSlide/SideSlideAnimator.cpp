@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2015  Dimka Novikov, to@dimkanovikov.pro
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
+ */
+
 #include "SideSlideAnimator.h"
 #include "SideSlideWidget.h"
 
@@ -19,12 +35,12 @@ void SideSlideAnimator::setApplicationSide(WAF::ApplicationSide _side)
 	sideSlideWidget()->setApplicationSide(_side);
 }
 
-void SideSlideAnimator::animateForward(bool _blockingMode)
+void SideSlideAnimator::animateForward(bool _asyncCall)
 {
-	if (_blockingMode) {
-		slideIn();
-	} else {
+	if (_asyncCall) {
 		QTimer::singleShot(0, this, &SideSlideAnimator::slideIn);
+	} else {
+		slideIn();
 	}
 }
 
@@ -104,12 +120,12 @@ void SideSlideAnimator::slideIn()
 	}
 }
 
-void SideSlideAnimator::animateBackward(bool _blockingMode)
+void SideSlideAnimator::animateBackward(bool _asyncCall)
 {
-	if (_blockingMode) {
-		slideOut();
-	} else {
+	if (_asyncCall) {
 		QTimer::singleShot(0, this, &SideSlideAnimator::slideOut);
+	} else {
+		slideOut();
 	}
 }
 

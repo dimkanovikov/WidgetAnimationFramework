@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2015  Dimka Novikov, to@dimkanovikov.pro
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
+ */
+
 #ifndef SIDESLIDEWIDGET_H
 #define SIDESLIDEWIDGET_H
 
@@ -66,11 +82,7 @@ namespace WAF
 		/**
 		 * @brief Обновить отображаемое изображение анимированного виджета
 		 */
-		/** @{ */
-//		void slideInUpdatePixmap(int _value);
-//		void slideOutUpdatePixmap(int _value);
 		void updatePixmapWhenSlide(int _value);
-		/** @} */
 
 	private:
 		/**

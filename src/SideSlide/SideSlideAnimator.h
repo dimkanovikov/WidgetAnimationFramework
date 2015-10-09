@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2015  Dimka Novikov, to@dimkanovikov.pro
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
+ */
+
 #ifndef SIDESLIDEANIMATOR_H
 #define SIDESLIDEANIMATOR_H
 
@@ -30,7 +46,7 @@ namespace WAF
 		 * @brief Выдвинуть виджет
 		 */
 		/** @{ */
-		void animateForward(bool _blockingMode = true);
+		void animateForward(bool _asyncCall = true);
 		void slideIn();
 		/** @} */
 
@@ -38,7 +54,7 @@ namespace WAF
 		 * @brief Задвинуть виджет
 		 */
 		/** @{ */
-		void animateBackward(bool _blockingMode = true);
+		void animateBackward(bool _asyncCall = true);
 		void slideOut();
 		/** @} */
 
