@@ -67,8 +67,9 @@ namespace WAF
 		 * @brief Обновить отображаемое изображение анимированного виджета
 		 */
 		/** @{ */
-		void slideInUpdatePixmap(int _value);
-		void slideOutUpdatePixmap(int _value);
+//		void slideInUpdatePixmap(int _value);
+//		void slideOutUpdatePixmap(int _value);
+		void updatePixmapWhenSlide(int _value);
 		/** @} */
 
 	private:
