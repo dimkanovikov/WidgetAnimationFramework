@@ -9,15 +9,17 @@ CONFIG += c++11
 SOURCES += main.cpp \
     ../src/Animation.cpp \
     ../src/SideSlide/SideSlideAnimator.cpp \
-    ../src/SideSlide/SideSlideWidget.cpp
+    ../src/SideSlide/BackgroundDecorator.cpp
 
 HEADERS += \
     ../src/Animation.h \
     ../src/AnimationPrivate.h \
     ../src/AbstractAnimator.h \
     ../src/SideSlide/SideSlideAnimator.h \
-    ../src/SideSlide/SideSlideWidget.h \
-    ../src/AbstractAnimationWidget.h
+    ../src/SideSlide/BackgroundDecorator.h
 
 RESOURCES += \
     resources/resources.qrc
+
+DISTFILES += \
+    ../README.md

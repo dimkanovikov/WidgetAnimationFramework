@@ -4,7 +4,7 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 3 of the License, or any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,19 +25,19 @@ using WAF::AbstractAnimator;
 using WAF::SideSlideAnimator;
 
 
-void Animation::sideSlideIn(QWidget* _widget, WAF::ApplicationSide _side, bool _asyncCall)
+void Animation::sideSlideIn(QWidget* _widget, WAF::ApplicationSide _side)
 {
 	const bool IN = true;
-	sideSlide(_widget, _side, IN, _asyncCall);
+    sideSlide(_widget, _side, IN);
 }
 
-void Animation::sideSlideOut(QWidget* _widget, WAF::ApplicationSide _side, bool _asyncCall)
+void Animation::sideSlideOut(QWidget* _widget, WAF::ApplicationSide _side)
 {
 	const bool OUT = false;
-	sideSlide(_widget, _side, OUT, _asyncCall);
+    sideSlide(_widget, _side, OUT);
 }
 
-void Animation::sideSlide(QWidget* _widget, WAF::ApplicationSide _side, bool _in, bool _asyncCall)
+void Animation::sideSlide(QWidget* _widget, WAF::ApplicationSide _side, bool _in)
 {
 	AbstractAnimator* animator = 0;
 	if (pimpl()->hasSideSlideAnimator(_widget)) {
@@ -51,9 +51,9 @@ void Animation::sideSlide(QWidget* _widget, WAF::ApplicationSide _side, bool _in
 	}
 
 	if (_in) {
-		animator->animateForward(_asyncCall);
+        animator->animateForward();
 	} else {
-		animator->animateBackward(_asyncCall);
+        animator->animateBackward();
 	}
 }
 

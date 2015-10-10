@@ -4,7 +4,7 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 3 of the License, or any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,7 +28,7 @@
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
+    QApplication a(argc, argv);
 
 	QWidget w;
 
@@ -36,13 +36,15 @@ int main(int argc, char *argv[])
 	// Настроим главную панель
 	//
 	QFrame* mainToolbar = new QFrame(&w);
+    mainToolbar->setProperty("toolbar", true);
 	mainToolbar->setFrameShape(QFrame::StyledPanel);
 	QToolButton* mainToolbarMenuButton = new QToolButton(mainToolbar);
-	mainToolbarMenuButton->setIcon(QIcon(":/menu.png"));
+    mainToolbarMenuButton->setIcon(QIcon(":/menu.png"));
 	QLabel* mainToolbarTitle = new QLabel("<b>Widgets Animation Framework demo</b>", mainToolbar);
 	QHBoxLayout* mainToolbarLayout = new QHBoxLayout(mainToolbar);
+    mainToolbarLayout->setContentsMargins(QMargins());
 	mainToolbarLayout->setSpacing(10);
-	mainToolbarLayout->addWidget(mainToolbarMenuButton);
+    mainToolbarLayout->addWidget(mainToolbarMenuButton);
 	mainToolbarLayout->addWidget(mainToolbarTitle);
 
 	//
@@ -67,7 +69,7 @@ int main(int argc, char *argv[])
 	//
 	QFrame* menu = new QFrame(&w);
 	menu->setProperty("menu", true);
-	menu->setFixedWidth(200);
+    menu->setFixedWidth(300);
 	//
 	// ... панель меню
 	//
@@ -77,6 +79,7 @@ int main(int argc, char *argv[])
 	menuToolbarBackButton->setIcon(QIcon(":/arrow-left.png"));
 	QLabel* menuToolbarTitle = new QLabel("<b>Menu</b>", menuToolbar);
 	QHBoxLayout* menuToolbarLayout = new QHBoxLayout(menuToolbar);
+    menuToolbarLayout->setContentsMargins(QMargins());
 	menuToolbarLayout->setSpacing(10);
 	menuToolbarLayout->addWidget(menuToolbarBackButton);
 	menuToolbarLayout->addWidget(menuToolbarTitle);
@@ -97,8 +100,9 @@ int main(int argc, char *argv[])
 	//
 	// Панель авторизации
 	//
-	QFrame* auth = new QFrame(&w);
-	auth->setFrameShape(QFrame::StyledPanel);
+    QFrame* auth = new QFrame(&w);
+    auth->setProperty("menu", false);
+    auth->setFrameShape(QFrame::StyledPanel);
 	QLineEdit* authUserName = new QLineEdit(auth);
 	authUserName->setPlaceholderText("User Name");
 	QLineEdit* authPassword = new QLineEdit(auth);
@@ -120,16 +124,16 @@ int main(int argc, char *argv[])
 	//
 	QObject::connect(mainToolbarMenuButton, &QToolButton::clicked, [=](){
 		WAF::Animation::sideSlideIn(menu, WAF::LeftSide);
-	});
+    });
 	QObject::connect(menuToolbarBackButton, &QToolButton::clicked, [=](){
 		WAF::Animation::sideSlideOut(menu, WAF::LeftSide);
 	});
 	QObject::connect(menuButtonLogin, &QPushButton::clicked, [=](){
-		WAF::Animation::sideSlideIn(auth, WAF::TopSide);
+        WAF::Animation::sideSlideIn(auth, WAF::TopSide);
 		authUserName->setFocus();
 	});
 	QObject::connect(authLoginButton, &QPushButton::clicked, [=](){
-		WAF::Animation::sideSlideOut(auth, WAF::TopSide);
+        WAF::Animation::sideSlideOut(auth, WAF::TopSide);
 		QString userName = authUserName->text();
 		if (userName.isEmpty()) {
 			userName = "Noname";
@@ -138,7 +142,7 @@ int main(int argc, char *argv[])
 		menuButtonLogin->setEnabled(false);
 	});
 	QObject::connect(authCancelButton, &QPushButton::clicked, [=](){
-		WAF::Animation::sideSlideOut(auth, WAF::TopSide);
+        WAF::Animation::sideSlideOut(auth, WAF::TopSide);
 	});
 	QObject::connect(menuButtonExit, &QPushButton::clicked, &QApplication::quit);
 
@@ -146,14 +150,14 @@ int main(int argc, char *argv[])
 	// Настроим и покажем приложение
 	//
 	w.setStyleSheet(
-		"QToolButton { border: none; min-width: 24px; min-height: 24px; }"
+        "QToolButton { border: none; min-width: 40px; min-height: 40px; icon-size: 24px; }"
 		"QTextEdit { border: none; }"
 		"QPushButton[menu=true] { text-align: left; background-color: white; border: none; border-bottom: 1px solid palette(dark); padding: 8px; }"
+        "QFrame[toolbar=true] { background-color: #66C966; }"
+        "QFrame[menu=false] { background-color: palette(window); }"
 		"QFrame[menu=true] { background-color: white; border: none; border-right: 1px solid palette(dark); }"
-		);
-#ifndef Q_OS_ANDROID || Q_OS_IOS
-	w.resize(600, 400);
-#endif
+        );
+    w.resize(400, 400);
 	w.show();
 
 	return a.exec();
