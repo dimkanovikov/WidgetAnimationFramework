@@ -3,6 +3,8 @@ QT       += core gui widgets
 TARGET = waf-demo
 TEMPLATE = app
 
+QMAKE_MAC_SDK = macosx10.11
+
 CONFIG += c++11
 
 

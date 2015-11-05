@@ -2,6 +2,14 @@
 
 Small extension for animate Qt widgets.
 
-Demonstration:
+###Side sliding animation
 
-![Side sliding nimation demonstration](http://dimkanovikov.pro/assets/images/dev/WAF-demo1.gif)
+`WAF::Animation::sideSlideIn(myCoolWidget, WAF::LeftSide);`
+
+![Side sliding animation demonstration](http://dimkanovikov.pro/assets/images/dev/WAF-demo1.gif)
+
+###Sliding animation
+
+`WAF::Animation::slideIn(myCoolWidget, WAF::FromTopToBottom);`
+
+![Sliding animation demonstration](http://dimkanovikov.pro/assets/images/dev/WAF-demo2.gif)

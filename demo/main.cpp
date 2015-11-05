@@ -26,7 +26,7 @@
 #include <QVBoxLayout>
 
 #include "../src/Animation.h"
-#include <QDebug>
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
 		"<p>Expand or collapse widgets in it's layout. Just call</p>"
 		"<p><pre>WAF::Animation::slide</pre></p>"
 		"<p>and set sliding direction."
+        "<p></p>"
 		);
 	QVBoxLayout* mainLayout = new QVBoxLayout(&w);
 	mainLayout->setContentsMargins(QMargins());
@@ -160,15 +161,14 @@ int main(int argc, char *argv[])
 	//
 	QObject::connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, [=](int _currentScrollPosition){
 		static int lastScrollPosition = 0;
-		static bool isAnimated = false;
-		if (!isAnimated) {
-			isAnimated = true;
+        static int lastScrollMaximum = textEdit->verticalScrollBar()->maximum();
+        if (lastScrollMaximum == textEdit->verticalScrollBar()->maximum()) {
 			//
 			// Прокрутка вниз
 			//
 			if (lastScrollPosition < _currentScrollPosition) {
 				if (mainToolbar->height() > 0) {
-					WAF::Animation::slideOut(mainToolbar, WAF::FromTopToBottom);
+                    WAF::Animation::slideOut(mainToolbar, WAF::FromTopToBottom);
 				}
 			}
 			//
@@ -176,12 +176,12 @@ int main(int argc, char *argv[])
 			//
 			else {
 				if (mainToolbar->height() == 0) {
-					WAF::Animation::slideIn(mainToolbar, WAF::FromTopToBottom);
+                    WAF::Animation::slideIn(mainToolbar, WAF::FromTopToBottom);
 				}
-			}
-			lastScrollPosition = _currentScrollPosition;
-			isAnimated = false;
+            }
 		}
+        lastScrollPosition = _currentScrollPosition;
+        lastScrollMaximum = textEdit->verticalScrollBar()->maximum();
 	});
 
 	//

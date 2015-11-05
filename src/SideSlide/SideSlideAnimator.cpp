@@ -37,11 +37,12 @@ SideSlideAnimator::SideSlideAnimator(QWidget* _widgetForSlide) :
 
 	m_decorator->hide();
 
-	connect(m_animation, &QPropertyAnimation::finished, [=](){
-		if (m_decorator->isHidden()) {
-			widgetForSlide()->hide();
-		}
-	});
+    connect(m_animation, &QPropertyAnimation::finished, [=](){
+        setAnimatedStopped();
+        if (m_decorator->isHidden()) {
+            widgetForSlide()->hide();
+        }
+    });
 
 	connect(m_decorator, &SideSlideBackgroundDecorator::clicked, this, &SideSlideAnimator::slideOut);
 }
@@ -60,6 +61,12 @@ void SideSlideAnimator::animateForward()
 
 void SideSlideAnimator::slideIn()
 {
+    //
+    // Прерываем выполнение, если клиент хочет повторить его
+    //
+    if (isAnimated() && isAnimatedForward()) return;
+    setAnimatedForward();
+
 	//
 	// Прячем виджет для анимирования
 	//
@@ -164,6 +171,12 @@ void SideSlideAnimator::animateBackward()
 
 void SideSlideAnimator::slideOut()
 {
+    //
+    // Прерываем выполнение, если клиент хочет повторить его
+    //
+    if (isAnimated() && !isAnimatedForward()) return;
+    setAnimatedBackward();
+
 	if (widgetForSlide()->isVisible()) {
 		//
 		// Определим самый верхний виджет

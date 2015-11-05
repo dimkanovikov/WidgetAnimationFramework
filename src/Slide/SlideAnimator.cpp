@@ -37,7 +37,10 @@ SlideAnimator::SlideAnimator(QWidget* _widgetForSlide) :
 
 	m_decorator->hide();
 
-	connect(m_animation, &QPropertyAnimation::finished, m_decorator, &QWidget::hide);
+    connect(m_animation, &QPropertyAnimation::finished, [=](){
+        setAnimatedStopped();
+        m_decorator->hide();
+    });
 }
 
 void SlideAnimator::setAnimationDirection(WAF::AnimationDirection _direction)
@@ -54,6 +57,12 @@ void SlideAnimator::animateForward()
 
 void SlideAnimator::slideIn()
 {
+    //
+    // Прерываем выполнение, если клиент хочет повторить его
+    //
+    if (isAnimated() && isAnimatedForward()) return;
+    setAnimatedForward();
+
 	//
 	// Определим финальный размер выкатываемого виджета
 	//
@@ -95,7 +104,7 @@ void SlideAnimator::slideIn()
 	//
 	// Выкатываем виджет
 	//
-	if (m_animation->state() == QPropertyAnimation::Running) {
+    if (m_animation->state() == QPropertyAnimation::Running) {
 		//
 		// ... если ещё не закончилась предыдущая анимация реверсируем её
 		//
@@ -121,6 +130,12 @@ void SlideAnimator::animateBackward()
 
 void SlideAnimator::slideOut()
 {
+    //
+    // Прерываем выполнение, если клиент хочет повторить его
+    //
+    if (isAnimated() && !isAnimatedForward()) return;
+    setAnimatedBackward();
+
 	//
 	// Определяем результирующий размер
 	//
