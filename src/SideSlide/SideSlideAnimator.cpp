@@ -15,20 +15,20 @@
  */
 
 #include "SideSlideAnimator.h"
-#include "BackgroundDecorator.h"
+#include "SideSlideBackgroundDecorator.h"
 
 #include <QEvent>
 #include <QPropertyAnimation>
 #include <QWidget>
 
 using WAF::SideSlideAnimator;
-using WAF::BackgroundDecorator;
+using WAF::SideSlideBackgroundDecorator;
 
 
 SideSlideAnimator::SideSlideAnimator(QWidget* _widgetForSlide) :
 	AbstractAnimator(_widgetForSlide),
 	m_animation(new QPropertyAnimation(_widgetForSlide, "pos")),
-	m_decorator(new BackgroundDecorator(_widgetForSlide->parentWidget()))
+	m_decorator(new SideSlideBackgroundDecorator(_widgetForSlide->parentWidget()))
 {
 	Q_ASSERT(_widgetForSlide);
 	_widgetForSlide->parentWidget()->installEventFilter(this);
@@ -43,7 +43,7 @@ SideSlideAnimator::SideSlideAnimator(QWidget* _widgetForSlide) :
 		}
 	});
 
-	connect(m_decorator, &BackgroundDecorator::clicked, this, &SideSlideAnimator::slideOut);
+	connect(m_decorator, &SideSlideBackgroundDecorator::clicked, this, &SideSlideAnimator::slideOut);
 }
 
 void SideSlideAnimator::setApplicationSide(WAF::ApplicationSide _side)

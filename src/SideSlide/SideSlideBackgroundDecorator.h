@@ -14,8 +14,8 @@
  * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
  */
 
-#ifndef BACKGROUNDDECORATOR_H
-#define BACKGROUNDDECORATOR_H
+#ifndef SIDESLIDEBACKGROUNDDECORATOR_H
+#define SIDESLIDEBACKGROUNDDECORATOR_H
 
 #include <QTimeLine>
 #include <QWidget>
@@ -29,12 +29,12 @@ namespace WAF
 	/**
 	 * @brief Класс декорирующий задний план анимации выкатывания
 	 */
-	class BackgroundDecorator : public QWidget
+	class SideSlideBackgroundDecorator : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		explicit BackgroundDecorator(QWidget* _parent);
+		explicit SideSlideBackgroundDecorator(QWidget* _parent);
 
 		/**
 		 * @brief Сохранить изображение родительского виджета
@@ -81,4 +81,4 @@ namespace WAF
 	};
 }
 
-#endif // BACKGROUNDDECORATOR_H
+#endif // SIDESLIDEBACKGROUNDDECORATOR_H

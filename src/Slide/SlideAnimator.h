@@ -14,8 +14,8 @@
  * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
  */
 
-#ifndef SIDESLIDEANIMATOR_H
-#define SIDESLIDEANIMATOR_H
+#ifndef SLIDEANIMATOR_H
+#define SLIDEANIMATOR_H
 
 #include "../AbstractAnimator.h"
 #include "../Animation.h"
@@ -28,21 +28,21 @@ class QPropertyAnimation;
  */
 namespace WAF
 {
-	class SideSlideBackgroundDecorator;
+	class SlideBackgroundDecorator;
 
 
 	/**
-	 * @brief Аниматор выдвижения виджета из-за стороны приложения
+	 * @brief Аниматор выдвижения виджета
 	 */
-	class SideSlideAnimator : public AbstractAnimator
+	class SlideAnimator : public AbstractAnimator
 	{
 	public:
-		explicit SideSlideAnimator(QWidget* _widgetForSlide);
+		explicit SlideAnimator(QWidget* _widgetForSlide);
 
 		/**
-		 * @brief Установить сторону, откуда выдвигать виджет
+		 * @brief Установить направление выдвижения
 		 */
-		void setApplicationSide(ApplicationSide _side);
+		void setAnimationDirection(AnimationDirection _direction);
 
 		/**
 		 * @brief Выдвинуть виджет
@@ -62,7 +62,7 @@ namespace WAF
 
 	protected:
 		/**
-		 * @brief Переопределяется, чтобы корректировать размер выкатываемого виджета
+		 * @brief Переопределяется, чтобы корректировать позицию перекрывающего виджета
 		 */
 		bool eventFilter(QObject* _object, QEvent* _event);
 
@@ -74,9 +74,9 @@ namespace WAF
 
 	private:
 		/**
-		 * @brief Сторона из-за которой выкатывать виджет
+		 * @brief Направление, по которому выкатывать виджет
 		 */
-		ApplicationSide m_side;
+		AnimationDirection m_direction;
 
 		/**
 		 * @brief Объект для анимирования выезжания
@@ -84,10 +84,10 @@ namespace WAF
 		QPropertyAnimation* m_animation;
 
 		/**
-		 * @brief Помошник затемняющий фон под выезжающим виджетом
+		 * @brief Помошник перекрывающий анимируемый виджет
 		 */
-		SideSlideBackgroundDecorator* m_decorator;
+		SlideBackgroundDecorator* m_decorator;
 	};
 }
 
-#endif // SIDESLIDEANIMATOR_H
+#endif // SLIDEANIMATOR_H

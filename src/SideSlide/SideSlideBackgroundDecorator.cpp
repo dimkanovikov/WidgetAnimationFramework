@@ -14,14 +14,14 @@
  * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
  */
 
-#include "BackgroundDecorator.h"
+#include "SideSlideBackgroundDecorator.h"
 
 #include <QPainter>
 
-using WAF::BackgroundDecorator;
+using WAF::SideSlideBackgroundDecorator;
 
 
-BackgroundDecorator::BackgroundDecorator(QWidget* _parent) :
+SideSlideBackgroundDecorator::SideSlideBackgroundDecorator(QWidget* _parent) :
 	QWidget(_parent)
 {
 	resize(maximumSize());
@@ -52,7 +52,7 @@ BackgroundDecorator::BackgroundDecorator(QWidget* _parent) :
 	});
 }
 
-void BackgroundDecorator::grabParent()
+void SideSlideBackgroundDecorator::grabParent()
 {
 #ifdef Q_OS_ANDROID
 	//
@@ -63,7 +63,7 @@ void BackgroundDecorator::grabParent()
 #endif
 }
 
-void BackgroundDecorator::decorate(bool _dark)
+void SideSlideBackgroundDecorator::decorate(bool _dark)
 {
 	if (m_timeline.state() == QTimeLine::Running) {
 		m_timeline.stop();
@@ -73,7 +73,7 @@ void BackgroundDecorator::decorate(bool _dark)
 	m_timeline.start();
 }
 
-void BackgroundDecorator::paintEvent(QPaintEvent* _event)
+void SideSlideBackgroundDecorator::paintEvent(QPaintEvent* _event)
 {
 	QPainter painter(this);
 	painter.drawPixmap(0, 0, m_background);
@@ -82,7 +82,7 @@ void BackgroundDecorator::paintEvent(QPaintEvent* _event)
 	QWidget::paintEvent(_event);
 }
 
-void BackgroundDecorator::mousePressEvent(QMouseEvent *_event)
+void SideSlideBackgroundDecorator::mousePressEvent(QMouseEvent *_event)
 {
 	emit clicked();
 
