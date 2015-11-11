@@ -76,17 +76,17 @@ namespace WAF
 		/**
 		 * @brief Выкатить виджет
 		 */
-		static void slideIn(QWidget* _widget, AnimationDirection _direction);
+		static void slideIn(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true);
 
 		/**
 		 * @brief Закатить виджет
 		 */
-		static void slideOut(QWidget* _widget, AnimationDirection _direction);
+		static void slideOut(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true);
 
 		/**
 		 * @brief Выкатить/закатить виджет
 		 */
-		static void slide(QWidget* _widget, AnimationDirection _direction, bool _in = true);
+		static void slide(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true, bool _in = true);
 
 	private:
 		/**

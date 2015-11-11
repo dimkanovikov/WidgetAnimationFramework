@@ -61,19 +61,19 @@ void Animation::sideSlide(QWidget* _widget, WAF::ApplicationSide _side, bool _in
 	}
 }
 
-void Animation::slideIn(QWidget* _widget, WAF::AnimationDirection _direction)
+void Animation::slideIn(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground)
 {
 	const bool IN = true;
-	slide(_widget, _direction, IN);
+	slide(_widget, _direction, _fixBackground, IN);
 }
 
-void Animation::slideOut(QWidget* _widget, WAF::AnimationDirection _direction)
+void Animation::slideOut(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground)
 {
 	const bool OUT = false;
-	slide(_widget, _direction, OUT);
+	slide(_widget, _direction, _fixBackground, OUT);
 }
 
-void Animation::slide(QWidget* _widget, WAF::AnimationDirection _direction, bool _in)
+void Animation::slide(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground, bool _in)
 {
 	const WAF::AnimatorType animatorType = WAF::Slide;
 	AbstractAnimator* animator = 0;
@@ -82,6 +82,7 @@ void Animation::slide(QWidget* _widget, WAF::AnimationDirection _direction, bool
 	} else {
 		SlideAnimator* slideAnimator = new SlideAnimator(_widget);
 		slideAnimator->setAnimationDirection(_direction);
+		slideAnimator->setFixBackground(_fixBackground);
 		animator = slideAnimator;
 
 		pimpl()->saveAnimator(_widget, animator, animatorType);
