@@ -13,3 +13,9 @@ Small extension for animate Qt widgets.
 `WAF::Animation::slideIn(myCoolWidget, WAF::FromTopToBottom);`
 
 ![Sliding animation demonstration](http://dimkanovikov.pro/assets/images/dev/WAF-demo2.gif)
+
+###Notify example
+
+Implemented in demo project.
+
+![Sliding notifications](http://dimkanovikov.pro/assets/images/dev/WAF-demo3.gif)

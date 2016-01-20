@@ -16,16 +16,66 @@
 
 #include <QApplication>
 
+#include <QDebug>
 #include <QFrame>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QScrollBar>
 #include <QTextEdit>
+#include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "../src/Animation.h"
+
+class NotifyMessage : public QFrame
+{
+public:
+	explicit NotifyMessage(const QString& _message, QWidget* _parent = 0) : QFrame(_parent) {
+		setProperty("notifyMessage", true);
+
+		QLabel* message = new QLabel(_message, this);
+		message->setProperty("notifyMessage", true);
+		message->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+		message->setWordWrap(true);
+		QToolButton* close = new QToolButton(this);
+		close->setIcon(QIcon(":/close.png"));
+
+		QHBoxLayout* layout = new QHBoxLayout(this);
+		layout->addWidget(message);
+		layout->addWidget(close);
+
+		QObject::connect(close, &QToolButton::clicked, this, &NotifyMessage::hideMessage);
+
+		setMaximumHeight(0);
+		m_lastHeight = 0;
+
+		QTimer* timer = new QTimer(this);
+		QObject::connect(timer, &QTimer::timeout, [=] {
+			if (m_lastHeight != maximumHeight()) {
+				int delta = maximumHeight() - m_lastHeight;
+				m_lastHeight = maximumHeight();
+				parentWidget()->resize(parentWidget()->width(), parentWidget()->height() + delta);
+				parentWidget()->move(parentWidget()->pos().x(), parentWidget()->pos().y() - delta);
+			}
+		});
+		timer->start(10);
+	}
+
+	void showMessage() {
+		WAF::Animation::slideIn(this, WAF::FromBottomToTop, false);
+		QTimer::singleShot(5000, this, &NotifyMessage::hideMessage);
+	}
+
+	void hideMessage() {
+		WAF::Animation::slideOut(this, WAF::FromBottomToTop, false);
+	}
+
+private:
+	int m_lastHeight;
+};
 
 int main(int argc, char *argv[])
 {
@@ -66,7 +116,7 @@ int main(int argc, char *argv[])
 		"<p>Expand or collapse widgets in it's layout. Just call</p>"
 		"<p><pre>WAF::Animation::slide</pre></p>"
 		"<p>and set sliding direction."
-        "<p></p>"
+		"<p></p>"
 		);
 	QVBoxLayout* mainLayout = new QVBoxLayout(&w);
 	mainLayout->setContentsMargins(QMargins());
@@ -96,6 +146,8 @@ int main(int argc, char *argv[])
 	//
 	QPushButton* menuButtonLogin = new QPushButton("Login", menu);
 	menuButtonLogin->setProperty("menu", true);
+	QPushButton* menuButtonNotify = new QPushButton("Notify", menu);
+	menuButtonNotify->setProperty("menu", true);
 	QPushButton* menuButtonExit = new QPushButton("Exit", menu);
 	menuButtonExit->setProperty("menu", true);
 	QVBoxLayout* menuLayout = new QVBoxLayout(menu);
@@ -103,6 +155,7 @@ int main(int argc, char *argv[])
 	menuLayout->setSpacing(0);
 	menuLayout->addWidget(menuToolbar);
 	menuLayout->addWidget(menuButtonLogin);
+	menuLayout->addWidget(menuButtonNotify);
 	menuLayout->addWidget(menuButtonExit);
 	menuLayout->addStretch();
 	menu->hide();
@@ -130,19 +183,34 @@ int main(int argc, char *argv[])
 	auth->hide();
 
 	//
+	// Панель уведомлений
+	//
+	QFrame* notify = new QFrame(&w);
+	notify->setProperty("notifyArea", true);
+	notify->setFrameShape(QFrame::NoFrame);
+	NotifyMessage* connectionMessage = new NotifyMessage("Connections estabilished", notify);
+	NotifyMessage* subscriptionMessage = new NotifyMessage("Subscribe to <b>pro</b> account and get more available features.<br/><br/><a href=\"http://dimkanovikov.pro\">Read more</a>", notify);
+	QVBoxLayout* notifyLayout = new QVBoxLayout(notify);
+	notifyLayout->setContentsMargins(QMargins());
+	notifyLayout->setSpacing(1);
+	notifyLayout->addWidget(connectionMessage);
+	notifyLayout->addWidget(subscriptionMessage);
+	notify->hide();
+
+	//
 	// Настроим соединения
 	//
-	QObject::connect(mainToolbarMenuButton, &QToolButton::clicked, [=](){
+	QObject::connect(mainToolbarMenuButton, &QToolButton::clicked, [=] {
 		WAF::Animation::sideSlideIn(menu, WAF::LeftSide);
 	});
-	QObject::connect(menuToolbarBackButton, &QToolButton::clicked, [=](){
+	QObject::connect(menuToolbarBackButton, &QToolButton::clicked, [=] {
 		WAF::Animation::sideSlideOut(menu, WAF::LeftSide);
 	});
-	QObject::connect(menuButtonLogin, &QPushButton::clicked, [=](){
+	QObject::connect(menuButtonLogin, &QPushButton::clicked, [=] {
 		WAF::Animation::sideSlideIn(auth, WAF::TopSide);
 		authUserName->setFocus();
 	});
-	QObject::connect(authLoginButton, &QPushButton::clicked, [=](){
+	QObject::connect(authLoginButton, &QPushButton::clicked, [=] {
 		WAF::Animation::sideSlideOut(auth, WAF::TopSide);
 		QString userName = authUserName->text();
 		if (userName.isEmpty()) {
@@ -151,24 +219,32 @@ int main(int argc, char *argv[])
 		menuButtonLogin->setText("Logged as " + userName);
 		menuButtonLogin->setEnabled(false);
 	});
-	QObject::connect(authCancelButton, &QPushButton::clicked, [=](){
+	QObject::connect(authCancelButton, &QPushButton::clicked, [=] {
 		WAF::Animation::sideSlideOut(auth, WAF::TopSide);
+	});
+	QObject::connect(menuButtonNotify, &QPushButton::clicked, [=] {
+		WAF::Animation::sideSlideOut(menu, WAF::LeftSide);
+		WAF::Animation::sideSlideIn(notify, WAF::BottomSide, false);
+		QTimer::singleShot(420, Qt::PreciseTimer, [=] {
+			connectionMessage->showMessage();
+			QTimer::singleShot(300, subscriptionMessage, &NotifyMessage::showMessage);
+		});
 	});
 	QObject::connect(menuButtonExit, &QPushButton::clicked, &QApplication::quit);
 
 	//
 	// Скрываем или показываем тулбар, в зависимости от направления прокрутки текстового редактора
 	//
-	QObject::connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, [=](int _currentScrollPosition){
+	QObject::connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, [=] (int _currentScrollPosition) {
 		static int lastScrollPosition = 0;
-        static int lastScrollMaximum = textEdit->verticalScrollBar()->maximum();
-        if (lastScrollMaximum == textEdit->verticalScrollBar()->maximum()) {
+		static int lastScrollMaximum = textEdit->verticalScrollBar()->maximum();
+		if (lastScrollMaximum == textEdit->verticalScrollBar()->maximum()) {
 			//
 			// Прокрутка вниз
 			//
 			if (lastScrollPosition < _currentScrollPosition) {
 				if (mainToolbar->height() > 0) {
-                    WAF::Animation::slideOut(mainToolbar, WAF::FromTopToBottom);
+					WAF::Animation::slideOut(mainToolbar, WAF::FromTopToBottom);
 				}
 			}
 			//
@@ -176,24 +252,28 @@ int main(int argc, char *argv[])
 			//
 			else {
 				if (mainToolbar->height() == 0) {
-                    WAF::Animation::slideIn(mainToolbar, WAF::FromTopToBottom);
+					WAF::Animation::slideIn(mainToolbar, WAF::FromTopToBottom);
 				}
-            }
+			}
 		}
-        lastScrollPosition = _currentScrollPosition;
-        lastScrollMaximum = textEdit->verticalScrollBar()->maximum();
+		lastScrollPosition = _currentScrollPosition;
+		lastScrollMaximum = textEdit->verticalScrollBar()->maximum();
 	});
 
 	//
 	// Настроим и покажем приложение
 	//
 	w.setStyleSheet(
+		"QAbstractButton { outline: none; }"
 		"QToolButton { border: none; min-width: 40px; min-height: 40px; icon-size: 24px; }"
 		"QTextEdit { border: none; }"
 		"QPushButton[menu=true] { text-align: left; background-color: white; border: none; border-bottom: 1px solid palette(dark); padding: 8px; }"
 		"QFrame[toolbar=true] { background-color: #66C966; }"
 		"QFrame[menu=false] { background-color: palette(window); }"
 		"QFrame[menu=true] { background-color: white; border: none; border-right: 1px solid palette(dark); }"
+		"QFrame[notifyArea=true] { background-color: white; }"
+		"QFrame[notifyMessage=true] { background-color: #232323; color: white; }"
+		"QLabel[notifyMessage=true] { background-color: #232323; color: white; }"
 		);
 	w.resize(400, 400);
 	w.show();

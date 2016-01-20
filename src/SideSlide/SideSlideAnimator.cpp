@@ -27,6 +27,7 @@ using WAF::SideSlideBackgroundDecorator;
 
 SideSlideAnimator::SideSlideAnimator(QWidget* _widgetForSlide) :
 	AbstractAnimator(_widgetForSlide),
+	m_decorateBackground(true),
 	m_animation(new QPropertyAnimation(_widgetForSlide, "pos")),
 	m_decorator(new SideSlideBackgroundDecorator(_widgetForSlide->parentWidget()))
 {
@@ -37,12 +38,12 @@ SideSlideAnimator::SideSlideAnimator(QWidget* _widgetForSlide) :
 
 	m_decorator->hide();
 
-    connect(m_animation, &QPropertyAnimation::finished, [=](){
-        setAnimatedStopped();
-        if (m_decorator->isHidden()) {
-            widgetForSlide()->hide();
-        }
-    });
+	connect(m_animation, &QPropertyAnimation::finished, [=](){
+		setAnimatedStopped();
+		if (m_animation->direction() == QPropertyAnimation::Backward) {
+			widgetForSlide()->hide();
+		}
+	});
 
 	connect(m_decorator, &SideSlideBackgroundDecorator::clicked, this, &SideSlideAnimator::slideOut);
 }
@@ -54,6 +55,13 @@ void SideSlideAnimator::setApplicationSide(WAF::ApplicationSide _side)
 	}
 }
 
+void SideSlideAnimator::setDecorateBackground(bool _decorate)
+{
+	if (m_decorateBackground != _decorate) {
+		m_decorateBackground = _decorate;
+	}
+}
+
 void SideSlideAnimator::animateForward()
 {
 	slideIn();
@@ -61,11 +69,11 @@ void SideSlideAnimator::animateForward()
 
 void SideSlideAnimator::slideIn()
 {
-    //
-    // Прерываем выполнение, если клиент хочет повторить его
-    //
-    if (isAnimated() && isAnimatedForward()) return;
-    setAnimatedForward();
+	//
+	// Прерываем выполнение, если клиент хочет повторить его
+	//
+	if (isAnimated() && isAnimatedForward()) return;
+	setAnimatedForward();
 
 	//
 	// Прячем виджет для анимирования
@@ -123,11 +131,13 @@ void SideSlideAnimator::slideIn()
 	//
 	// Позиционируем декоратор
 	//
-	m_decorator->setParent(topWidget);
-	m_decorator->move(0, 0);
-	m_decorator->grabParent();
-	m_decorator->show();
-	m_decorator->raise();
+	if (m_decorateBackground) {
+		m_decorator->setParent(topWidget);
+		m_decorator->move(0, 0);
+		m_decorator->grabParent();
+		m_decorator->show();
+		m_decorator->raise();
+	}
 
 	//
 	// Позиционируем виджет для анимации в исходное положение и настраиваем его размер
@@ -160,8 +170,10 @@ void SideSlideAnimator::slideIn()
 	//
 	// Декорируем фон
 	//
-	const bool DARKER = true;
-	m_decorator->decorate(DARKER);
+	if (m_decorateBackground) {
+		const bool DARKER = true;
+		m_decorator->decorate(DARKER);
+	}
 }
 
 void SideSlideAnimator::animateBackward()
@@ -171,11 +183,11 @@ void SideSlideAnimator::animateBackward()
 
 void SideSlideAnimator::slideOut()
 {
-    //
-    // Прерываем выполнение, если клиент хочет повторить его
-    //
-    if (isAnimated() && !isAnimatedForward()) return;
-    setAnimatedBackward();
+	//
+	// Прерываем выполнение, если клиент хочет повторить его
+	//
+	if (isAnimated() && !isAnimatedForward()) return;
+	setAnimatedBackward();
 
 	if (widgetForSlide()->isVisible()) {
 		//
@@ -241,8 +253,10 @@ void SideSlideAnimator::slideOut()
 		//
 		// Декорируем фон
 		//
-		const bool LIGHTER = false;
-		m_decorator->decorate(LIGHTER);
+		if (m_decorateBackground) {
+			const bool LIGHTER = false;
+			m_decorator->decorate(LIGHTER);
+		}
 	}
 }
 
@@ -252,14 +266,24 @@ bool SideSlideAnimator::eventFilter(QObject* _object, QEvent* _event)
 		&& _event->type() == QEvent::Resize) {
 		QWidget* widgetForSlideParent = widgetForSlide()->parentWidget();
 		switch (m_side) {
-			case WAF::LeftSide:
 			case WAF::RightSide: {
+				widgetForSlide()->move(widgetForSlideParent->width() - widgetForSlide()->width(), 0);
+				//
+				// проваливаемся, для корректировки высоты
+				//
+			}
+			case WAF::LeftSide: {
 				widgetForSlide()->resize(widgetForSlide()->width(), widgetForSlideParent->height());
 				break;
 			}
 
-			case WAF::TopSide:
 			case WAF::BottomSide: {
+				widgetForSlide()->move(0, widgetForSlideParent->height() - widgetForSlide()->height());
+				//
+				// Проваливаемся, для корректировки ширины
+				//
+			}
+			case WAF::TopSide: {
 				widgetForSlide()->resize(widgetForSlideParent->width(), widgetForSlide()->height());
 				break;
 			}
