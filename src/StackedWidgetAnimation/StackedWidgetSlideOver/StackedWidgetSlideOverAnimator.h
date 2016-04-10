@@ -14,13 +14,14 @@
  * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
  */
 
-#ifndef SLIDEANIMATOR_H
-#define SLIDEANIMATOR_H
+#ifndef STACKEDWIDGETSLIDEOVERANIMATOR_H
+#define STACKEDWIDGETSLIDEOVERANIMATOR_H
 
-#include "../AbstractAnimator.h"
-#include "../Animation.h"
+#include <WAF.h>
+#include <AbstractAnimator.h>
 
 class QPropertyAnimation;
+class QStackedWidget;
 
 
 /**
@@ -28,18 +29,18 @@ class QPropertyAnimation;
  */
 namespace WAF
 {
-	class SlideBackgroundDecorator;
+	class StackedWidgetSlideOverDecorator;
 
 
 	/**
-	 * @brief Аниматор выдвижения виджета
+	 * @brief Аниматор выдвижения виджета из стека с наезжанием на текущий виджет
 	 */
-	class SlideAnimator : public AbstractAnimator
+	class StackedWidgetSlideOverAnimator : public AbstractAnimator
 	{
 		Q_OBJECT
 
 	public:
-		explicit SlideAnimator(QWidget* _widgetForSlide);
+		explicit StackedWidgetSlideOverAnimator(QStackedWidget* _container, QWidget* _widgetForSlide);
 
 		/**
 		 * @brief Установить направление выдвижения
@@ -47,25 +48,17 @@ namespace WAF
 		void setAnimationDirection(AnimationDirection _direction);
 
 		/**
-		 * @brief Фиксировать фон при анимации (по умолчанию фон фиксируется)
-		 */
-		void setFixBackground(bool _fix);
-
-		/**
 		 * @brief Выдвинуть виджет
 		 */
 		/** @{ */
 		void animateForward();
-		void slideIn();
+		void slideOver();
 		/** @} */
 
 		/**
-		 * @brief Задвинуть виджет
+		 * @brief Обратной анимации для данного случая нет
 		 */
-		/** @{ */
-		void animateBackward();
-		void slideOut();
-		/** @} */
+		void animateBackward() {}
 
 	protected:
 		/**
@@ -86,20 +79,15 @@ namespace WAF
 		AnimationDirection m_direction;
 
 		/**
-		 * @brief Фиксировать фон при анимации
+		 * @brief Помошники
 		 */
-		bool m_isFixBackground;
+		StackedWidgetSlideOverDecorator* m_decorator;
 
 		/**
-		 * @brief Объект для анимирования выезжания
+		 * @brief Объекты для анимирования выезжания
 		 */
 		QPropertyAnimation* m_animation;
-
-		/**
-		 * @brief Помошник перекрывающий анимируемый виджет
-		 */
-		SlideBackgroundDecorator* m_decorator;
 	};
 }
 
-#endif // SLIDEANIMATOR_H
+#endif // STACKEDWIDGETSLIDEOVERANIMATOR_H

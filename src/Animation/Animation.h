@@ -17,6 +17,8 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+#include <WAF.h>
+
 class QWidget;
 
 
@@ -25,26 +27,6 @@ class QWidget;
  */
 namespace WAF
 {
-	/**
-	 * @brief Края приложения
-	 */
-	enum ApplicationSide {
-		LeftSide,
-		TopSide,
-		RightSide,
-		BottomSide
-	};
-
-	/**
-	 * @brief Направление анимации
-	 */
-	enum AnimationDirection {
-		FromLeftToRight,
-		FromTopToBottom,
-		FromRightToLeft,
-		FromBottomToTop
-	};
-
 	/**
 	 * @brief Данные фасада
 	 */

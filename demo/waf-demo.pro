@@ -7,22 +7,39 @@ QMAKE_MAC_SDK = macosx10.11
 
 CONFIG += c++11
 
-
-SOURCES += main.cpp \
-    ../src/Animation.cpp \
-    ../src/SideSlide/SideSlideAnimator.cpp \
-    ../src/Slide/SlideAnimator.cpp \
-    ../src/Slide/SlideBackgroundDecorator.cpp \
-    ../src/SideSlide/SideSlideBackgroundDecorator.cpp
+INCLUDEPATH += ../src
 
 HEADERS += \
-    ../src/Animation.h \
-    ../src/AnimationPrivate.h \
     ../src/AbstractAnimator.h \
-    ../src/SideSlide/SideSlideAnimator.h \
-    ../src/Slide/SlideAnimator.h \
-    ../src/Slide/SlideBackgroundDecorator.h \
-    ../src/SideSlide/SideSlideBackgroundDecorator.h
+    ../src/Animation/Animation.h \
+    ../src/Animation/AnimationPrivate.h \
+    ../src/Animation/SideSlide/SideSlideAnimator.h \
+    ../src/Animation/SideSlide/SideSlideBackgroundDecorator.h \
+    ../src/Animation/Slide/SlideAnimator.h \
+    ../src/Animation/Slide/SlideForegroundDecorator.h \
+    ../src/StackedWidgetAnimation/StackedWidgetAnimation.h \
+    ../src/StackedWidgetAnimation/StackedWidgetAnimationPrivate.h \
+    ../src/WAF.h \
+    ../src/StackedWidgetAnimation/StackedWidgetSlide/StackedWidgetSlideAnimator.h \
+    ../src/StackedWidgetAnimation/StackedWidgetSlide/StackedWidgetSlideDecorator.h \
+    ../src/StackedWidgetAnimation/StackedWidgetSlideOver/StackedWidgetSlideOverDecorator.h \
+    ../src/StackedWidgetAnimation/StackedWidgetSlideOver/StackedWidgetSlideOverAnimator.h \
+    ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInDecorator.h \
+    ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInAnimator.h
+
+SOURCES += main.cpp \
+    ../src/Animation/Animation.cpp \
+    ../src/Animation/SideSlide/SideSlideAnimator.cpp \
+    ../src/Animation/SideSlide/SideSlideBackgroundDecorator.cpp \
+    ../src/Animation/Slide/SlideAnimator.cpp \
+    ../src/Animation/Slide/SlideForegroundDecorator.cpp \
+    ../src/StackedWidgetAnimation/StackedWidgetAnimation.cpp \
+    ../src/StackedWidgetAnimation/StackedWidgetSlide/StackedWidgetSlideAnimator.cpp \
+    ../src/StackedWidgetAnimation/StackedWidgetSlide/StackedWidgetSlideDecorator.cpp \
+    ../src/StackedWidgetAnimation/StackedWidgetSlideOver/StackedWidgetSlideOverAnimator.cpp \
+    ../src/StackedWidgetAnimation/StackedWidgetSlideOver/StackedWidgetSlideOverDecorator.cpp \
+    ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInAnimator.cpp \
+    ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInDecorator.cpp
 
 RESOURCES += \
     resources/resources.qrc

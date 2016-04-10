@@ -15,14 +15,14 @@
  */
 
 #include "SlideAnimator.h"
-#include "SlideBackgroundDecorator.h"
+#include "SlideForegroundDecorator.h"
 
 #include <QEvent>
 #include <QPropertyAnimation>
 #include <QWidget>
 
 using WAF::SlideAnimator;
-using WAF::SlideBackgroundDecorator;
+using WAF::SlideForegroundDecorator;
 
 
 SlideAnimator::SlideAnimator(QWidget* _widgetForSlide) :
@@ -30,7 +30,7 @@ SlideAnimator::SlideAnimator(QWidget* _widgetForSlide) :
 	m_direction(WAF::FromLeftToRight),
 	m_isFixBackground(true),
 	m_animation(new QPropertyAnimation(_widgetForSlide, "maximumSize")),
-	m_decorator(new SlideBackgroundDecorator(_widgetForSlide))
+	m_decorator(new SlideForegroundDecorator(_widgetForSlide))
 {
 	Q_ASSERT(_widgetForSlide);
 	_widgetForSlide->installEventFilter(this);
@@ -84,9 +84,27 @@ void SlideAnimator::slideIn()
 	setAnimatedForward();
 
 	//
+	// Определим размер неизменяемой стороны выкатываемого виджета
+	//
+	switch (m_direction) {
+		case WAF::FromLeftToRight:
+		case WAF::FromRightToLeft: {
+			widgetForSlide()->setMaximumWidth(0);
+			break;
+		}
+
+		case WAF::FromTopToBottom:
+		case WAF::FromBottomToTop: {
+			widgetForSlide()->setMaximumHeight(0);
+			break;
+		}
+	}
+	widgetForSlide()->show();
+	const QSize currentSize = widgetForSlide()->size();
+
+	//
 	// Определим финальный размер выкатываемого виджета
 	//
-	const QSize currentSize = widgetForSlide()->size();
 	QSize finalSize = currentSize;
 	switch (m_direction) {
 		case WAF::FromLeftToRight:

@@ -30,19 +30,21 @@ namespace WAF
 	class AbstractAnimator;
 
 	/**
-	 * @brief Виды аниматоров
-	 */
-	enum AnimatorType {
-		SideSlide,
-		Slide
-	};
-
-
-	/**
 	 * @brief Данные фасада анимаций
 	 */
-	class AnimationPrivate
+	class StackedWidgetAnimationPrivate
 	{
+	public:
+		/**
+		 * @brief Виды аниматоров
+		 */
+		enum AnimatorType {
+			Slide,
+			SlideOver,
+			FadeIn,
+			ExpandOrCollapse
+		};
+
 	public:
 		/**
 		 * @brief Есть ли аниматор для заданного виджета

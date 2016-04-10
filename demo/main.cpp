@@ -23,12 +23,15 @@
 #include <QPushButton>
 #include <QResizeEvent>
 #include <QScrollBar>
+#include <QStackedWidget>
+#include <QTabBar>
 #include <QTextEdit>
 #include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
 
-#include "../src/Animation.h"
+#include <Animation/Animation.h>
+#include <StackedWidgetAnimation/StackedWidgetAnimation.h>
 
 class NotifyMessage : public QFrame
 {
@@ -99,7 +102,18 @@ int main(int argc, char *argv[])
 	mainToolbarLayout->addWidget(mainToolbarTitle);
 
 	//
+	// Настроим вкладки
+	//
+	QTabBar* tabs = new QTabBar(&w);
+	tabs->addTab("TEXT");
+	tabs->addTab("CREDITS");
+
+	//
 	// Настроим главный виджет
+	//
+	QStackedWidget* pages = new QStackedWidget(&w);
+	//
+	// ... настроим страницу с текстом
 	//
 	QTextEdit* textEdit = new QTextEdit(&w);
 	textEdit->document()->setDocumentMargin(20);
@@ -118,11 +132,25 @@ int main(int argc, char *argv[])
 		"<p>and set sliding direction."
 		"<p></p>"
 		);
+	pages->addWidget(textEdit);
+	//
+	// ... настроим страницу о программе
+	//
+	QLabel* creditsInfo = new QLabel(&w);
+	creditsInfo->setText(
+			"DimkaNovikov labs."
+			);
+	creditsInfo->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+	pages->addWidget(creditsInfo);
+	//
+	// Настроим компоновку
+	//
 	QVBoxLayout* mainLayout = new QVBoxLayout(&w);
 	mainLayout->setContentsMargins(QMargins());
 	mainLayout->setSpacing(0);
 	mainLayout->addWidget(mainToolbar);
-	mainLayout->addWidget(textEdit);
+	mainLayout->addWidget(tabs);
+	mainLayout->addWidget(pages);
 
 	//
 	// Настроим меню
@@ -233,7 +261,14 @@ int main(int argc, char *argv[])
 	QObject::connect(menuButtonExit, &QPushButton::clicked, &QApplication::quit);
 
 	//
-	// Скрываем или показываем тулбар, в зависимости от направления прокрутки текстового редактора
+	// Соединяем вкладки со страницами
+	//
+	QObject::connect(tabs, &QTabBar::currentChanged, [=] (int _showWidgetIndex) {
+		WAF::StackedWidgetAnimation::fadeIn(pages, pages->widget(_showWidgetIndex), pages->palette().window().color());
+	});
+
+	//
+	// Скрываем или показываем тулбар и вкладки, в зависимости от направления прокрутки текстового редактора
 	//
 	QObject::connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, [=] (int _currentScrollPosition) {
 		static int lastScrollPosition = 0;
@@ -245,6 +280,7 @@ int main(int argc, char *argv[])
 			if (lastScrollPosition < _currentScrollPosition) {
 				if (mainToolbar->height() > 0) {
 					WAF::Animation::slideOut(mainToolbar, WAF::FromTopToBottom);
+					WAF::Animation::slideOut(tabs, WAF::FromTopToBottom);
 				}
 			}
 			//
@@ -253,6 +289,7 @@ int main(int argc, char *argv[])
 			else {
 				if (mainToolbar->height() == 0) {
 					WAF::Animation::slideIn(mainToolbar, WAF::FromTopToBottom);
+					WAF::Animation::slideIn(tabs, WAF::FromTopToBottom);
 				}
 			}
 		}

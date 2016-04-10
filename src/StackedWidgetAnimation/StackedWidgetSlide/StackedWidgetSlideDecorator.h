@@ -14,11 +14,12 @@
  * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
  */
 
-#ifndef SLIDEBACKGROUNDDECORATOR_H
-#define SLIDEBACKGROUNDDECORATOR_H
+#ifndef STACKEDWIDGETSLIDEDECORATOR_H
+#define STACKEDWIDGETSLIDEDECORATOR_H
 
-#include <QTimeLine>
 #include <QWidget>
+
+class QStackedWidget;
 
 
 /**
@@ -27,20 +28,24 @@
 namespace WAF
 {
 	/**
-	 * @brief Класс перекрывающий передний план выкатываемого виджета
-	 * @note Делается это для того, чтобы скрыть деформации компоновщика, при изменении размера виджета
+	 * @brief Класс рисующий выкатываемый виджет
 	 */
-	class SlideBackgroundDecorator : public QWidget
+	class StackedWidgetSlideDecorator : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		explicit SlideBackgroundDecorator(QWidget* _parent);
+		explicit StackedWidgetSlideDecorator(QWidget* _parent, QWidget* _widgetForGrab);
 
 		/**
-		 * @brief Сохранить изображение родительского виджета
+		 * @brief Сохранить изображение стэка для прорисовки
 		 */
-		void grabParent(const QSize& _size);
+		void grabContainer();
+
+		/**
+		 * @brief Сохранить изображение виджета для прорисовки
+		 */
+		void grabWidget();
 
 	protected:
 		/**
@@ -50,10 +55,15 @@ namespace WAF
 
 	private:
 		/**
+		 * @brief Виджет, который будем рисовать
+		 */
+		QWidget* m_widgetForGrab;
+
+		/**
 		 * @brief Фоновое изображение
 		 */
-		QPixmap m_background;
+		QPixmap m_foreground;
 	};
 }
 
-#endif // SLIDEBACKGROUNDDECORATOR_H
+#endif // STACKEDWIDGETSLIDEDECORATOR_H

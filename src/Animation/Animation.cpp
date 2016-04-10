@@ -16,10 +16,11 @@
 
 #include "Animation.h"
 #include "AnimationPrivate.h"
-#include "AbstractAnimator.h"
 
-#include "SideSlide/SideSlideAnimator.h"
-#include "Slide/SlideAnimator.h"
+#include <AbstractAnimator.h>
+
+#include <Animation/SideSlide/SideSlideAnimator.h>
+#include <Animation/Slide/SlideAnimator.h>
 
 using WAF::Animation;
 using WAF::AnimationPrivate;
@@ -42,7 +43,7 @@ void Animation::sideSlideOut(QWidget* _widget, WAF::ApplicationSide _side, bool 
 
 void Animation::sideSlide(QWidget* _widget, WAF::ApplicationSide _side, bool _decorateBackground, bool _in)
 {
-	const WAF::AnimatorType animatorType = WAF::SideSlide;
+	const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::SideSlide;
 	AbstractAnimator* animator = 0;
 	if (pimpl()->hasAnimator(_widget, animatorType)) {
 		animator = pimpl()->animator(_widget, animatorType);
@@ -80,7 +81,7 @@ void Animation::slideOut(QWidget* _widget, WAF::AnimationDirection _direction, b
 
 void Animation::slide(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground, bool _in)
 {
-	const WAF::AnimatorType animatorType = WAF::Slide;
+	const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::Slide;
 	AbstractAnimator* animator = 0;
 	if (pimpl()->hasAnimator(_widget, animatorType)) {
 		animator = pimpl()->animator(_widget, animatorType);
