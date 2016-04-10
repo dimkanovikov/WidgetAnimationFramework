@@ -28,6 +28,7 @@ using WAF::StackedWidgetSlideOverDecorator;
 StackedWidgetSlideOverAnimator::StackedWidgetSlideOverAnimator(QStackedWidget* _container, QWidget* _widgetForSlide) :
 	AbstractAnimator(_container),
 	m_direction(WAF::FromLeftToRight),
+	m_coveredWidget(_container->currentWidget()),
 	m_decorator(new StackedWidgetSlideOverDecorator(_container, _widgetForSlide)),
 	m_animation(new QPropertyAnimation(m_decorator, "pos"))
 {
@@ -43,7 +44,9 @@ StackedWidgetSlideOverAnimator::StackedWidgetSlideOverAnimator(QStackedWidget* _
 	connect(m_animation, &QPropertyAnimation::finished, [=] {
 		setAnimatedStopped();
 
-		_container->setCurrentWidget(_widgetForSlide);
+		if (isAnimatedForward()) {
+			_container->setCurrentWidget(_widgetForSlide);
+		}
 		m_decorator->hide();
 	});
 }
@@ -57,10 +60,10 @@ void StackedWidgetSlideOverAnimator::setAnimationDirection(WAF::AnimationDirecti
 
 void StackedWidgetSlideOverAnimator::animateForward()
 {
-	slideOver();
+	slideOverIn();
 }
 
-void StackedWidgetSlideOverAnimator::slideOver()
+void StackedWidgetSlideOverAnimator::slideOverIn()
 {
 	//
 	// Прерываем выполнение, если клиент хочет повторить его
@@ -109,6 +112,88 @@ void StackedWidgetSlideOverAnimator::slideOver()
 
 	//
 	// Выкатываем виджет
+	//
+	if (m_animation->state() == QPropertyAnimation::Running) {
+		//
+		// ... если ещё не закончилась предыдущая анимация реверсируем её
+		//
+		m_animation->pause();
+		m_animation->setDirection(QPropertyAnimation::Backward);
+		m_animation->resume();
+	} else {
+		//
+		// ... если предыдущая анимация закончилась, запускаем новую анимацию
+		//
+		m_animation->setEasingCurve(QEasingCurve::InOutExpo);
+		m_animation->setDirection(QPropertyAnimation::Forward);
+		m_animation->setStartValue(startPos);
+		m_animation->setEndValue(finalPos);
+
+		m_animation->start();
+	}
+}
+
+void StackedWidgetSlideOverAnimator::animateBackward()
+{
+	slideOverOut();
+}
+
+void StackedWidgetSlideOverAnimator::slideOverOut()
+{
+	//
+	// Прерываем выполнение, если клиент хочет повторить его
+	//
+	if (isAnimated() && !isAnimatedForward()) return;
+	setAnimatedBackward();
+
+	//
+	// Обновляем изображение виджета в декораторе
+	//
+	m_decorator->grabWidget();
+
+	//
+	// Определим стартовую и финальную позиции для декорации
+	//
+	QPoint startPos;
+	QPoint finalPos;
+	switch (m_direction) {
+		default:
+		case WAF::FromLeftToRight: {
+			finalPos.setX(-1 * widgetForSlide()->width());
+			break;
+		}
+
+		case WAF::FromRightToLeft: {
+			finalPos.setX(widgetForSlide()->width());
+			break;
+		}
+
+		case WAF::FromTopToBottom: {
+			finalPos.setY(-1 * widgetForSlide()->height());
+			break;
+		}
+
+		case WAF::FromBottomToTop: {
+			finalPos.setY(widgetForSlide()->height());
+			break;
+		}
+	}
+
+	//
+	// Делаем виджет, над которым мы выкатывали текущий, активным
+	//
+	if (QStackedWidget* container = qobject_cast<QStackedWidget*>(widgetForSlide())) {
+		container->setCurrentWidget(m_coveredWidget);
+	}
+
+	//
+	// Позиционируем декоратор
+	//
+	m_decorator->show();
+	m_decorator->raise();
+
+	//
+	// Закатываем виджет
 	//
 	if (m_animation->state() == QPropertyAnimation::Running) {
 		//

@@ -51,7 +51,17 @@ namespace WAF
 		/**
 		 * @brief Выкатить заданный виджет поверх текущего
 		 */
-		static void slideOver(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
+		static void slideOverIn(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
+
+		/**
+		 * @brief Закатить заданный виджет поверх текущего
+		 */
+		static void slideOverOut(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
+
+		/**
+		 * @brief Выкатить или закатить заданный виджет поверх текущего
+		 */
+		static void slideOver(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction, bool _in);
 
 		/****/
 

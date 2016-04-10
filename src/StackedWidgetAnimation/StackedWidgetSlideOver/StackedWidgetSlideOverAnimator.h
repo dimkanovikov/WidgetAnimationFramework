@@ -52,13 +52,16 @@ namespace WAF
 		 */
 		/** @{ */
 		void animateForward();
-		void slideOver();
+		void slideOverIn();
 		/** @} */
 
 		/**
-		 * @brief Обратной анимации для данного случая нет
+		 * @brief Задвинуть виджет
 		 */
-		void animateBackward() {}
+		/** @{ */
+		void animateBackward();
+		void slideOverOut();
+		/** @} */
 
 	protected:
 		/**
@@ -77,6 +80,11 @@ namespace WAF
 		 * @brief Направление, по которому выкатывать виджет
 		 */
 		AnimationDirection m_direction;
+
+		/**
+		 * @brief Виджет, поверх которого выкатываем текущий
+		 */
+		QWidget* m_coveredWidget;
 
 		/**
 		 * @brief Помошники

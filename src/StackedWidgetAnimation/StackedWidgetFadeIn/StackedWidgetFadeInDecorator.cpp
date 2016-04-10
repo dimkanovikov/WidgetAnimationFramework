@@ -73,7 +73,6 @@ void StackedWidgetFadeInDecorator::paintEvent(QPaintEvent* _event)
 {
 	QPainter painter(this);
 	painter.fillRect(rect(), m_fadeInColor);
-//	painter.setCompositionMode(QPainter::CompositionMode_Source);
 	painter.setOpacity(m_opacity);
 	painter.drawPixmap(0, 0, m_foreground);
 
