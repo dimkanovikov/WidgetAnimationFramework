@@ -136,11 +136,8 @@ int main(int argc, char *argv[])
 	//
 	// ... настроим страницу о программе
 	//
-	QLabel* creditsInfo = new QLabel(&w);
-	creditsInfo->setText(
-			"DimkaNovikov labs."
-			);
-	creditsInfo->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+	QPushButton* creditsInfo = new QPushButton(&w);
+	creditsInfo->setText("DimkaNovikov labs.");
 	pages->addWidget(creditsInfo);
 	//
 	// Настроим компоновку
@@ -295,6 +292,11 @@ int main(int argc, char *argv[])
 		}
 		lastScrollPosition = _currentScrollPosition;
 		lastScrollMaximum = textEdit->verticalScrollBar()->maximum();
+	});
+
+	QObject::connect(creditsInfo, &QPushButton::clicked, [=] {
+		static int i = 2;
+		WAF::Animation::circleFill(creditsInfo, creditsInfo->rect().topRight(), QColor("#66C966"), (i++ % 2 == 0));
 	});
 
 	//

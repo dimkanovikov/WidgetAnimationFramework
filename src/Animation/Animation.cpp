@@ -21,12 +21,14 @@
 
 #include <Animation/SideSlide/SideSlideAnimator.h>
 #include <Animation/Slide/SlideAnimator.h>
+#include <Animation/CircleFill/CircleFillAnimator.h>
 
 using WAF::Animation;
 using WAF::AnimationPrivate;
 using WAF::AbstractAnimator;
 using WAF::SideSlideAnimator;
 using WAF::SlideAnimator;
+using WAF::CircleFillAnimator;
 
 
 void Animation::sideSlideIn(QWidget* _widget, WAF::ApplicationSide _side, bool _decorateBackground)
@@ -94,6 +96,32 @@ void Animation::slide(QWidget* _widget, WAF::AnimationDirection _direction, bool
 		slideAnimator->setAnimationDirection(_direction);
 		slideAnimator->setFixBackground(_fixBackground);
 		animator = slideAnimator;
+
+		pimpl()->saveAnimator(_widget, animator, animatorType);
+	}
+
+	if (_in) {
+		animator->animateForward();
+	} else {
+		animator->animateBackward();
+	}
+}
+
+void Animation::circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _in)
+{
+	const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::CircleFill;
+	AbstractAnimator* animator = 0;
+	if (pimpl()->hasAnimator(_widget, animatorType)) {
+		animator = pimpl()->animator(_widget, animatorType);
+		if (CircleFillAnimator* circleFillAnimator = qobject_cast<CircleFillAnimator*>(animator)) {
+			circleFillAnimator->setStartPoint(_startPoint);
+			circleFillAnimator->setFillColor(_fillColor);
+		}
+	} else {
+		CircleFillAnimator* circleFillAnimator = new CircleFillAnimator(_widget);
+		circleFillAnimator->setStartPoint(_startPoint);
+		circleFillAnimator->setFillColor(_fillColor);
+		animator = circleFillAnimator;
 
 		pimpl()->saveAnimator(_widget, animator, animatorType);
 	}

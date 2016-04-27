@@ -25,7 +25,9 @@ HEADERS += \
     ../src/StackedWidgetAnimation/StackedWidgetSlideOver/StackedWidgetSlideOverDecorator.h \
     ../src/StackedWidgetAnimation/StackedWidgetSlideOver/StackedWidgetSlideOverAnimator.h \
     ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInDecorator.h \
-    ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInAnimator.h
+    ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInAnimator.h \
+    ../src/Animation/CircleFill/CircleFillAnimator.h \
+    ../src/Animation/CircleFill/CircleFillDecorator.h
 
 SOURCES += main.cpp \
     ../src/Animation/Animation.cpp \
@@ -39,7 +41,9 @@ SOURCES += main.cpp \
     ../src/StackedWidgetAnimation/StackedWidgetSlideOver/StackedWidgetSlideOverAnimator.cpp \
     ../src/StackedWidgetAnimation/StackedWidgetSlideOver/StackedWidgetSlideOverDecorator.cpp \
     ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInAnimator.cpp \
-    ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInDecorator.cpp
+    ../src/StackedWidgetAnimation/StackedWidgetFadeIn/StackedWidgetFadeInDecorator.cpp \
+    ../src/Animation/CircleFill/CircleFillAnimator.cpp \
+    ../src/Animation/CircleFill/CircleFillDecorator.cpp
 
 RESOURCES += \
     resources/resources.qrc

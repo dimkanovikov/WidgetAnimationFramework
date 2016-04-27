@@ -19,6 +19,8 @@
 
 #include <WAF.h>
 
+class QColor;
+class QPoint;
 class QWidget;
 
 
@@ -69,6 +71,13 @@ namespace WAF
 		 * @brief Выкатить/закатить виджет
 		 */
 		static void slide(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true, bool _in = true);
+
+		/****/
+
+		/**
+		 * @brief Заполнить цветовым кругом
+		 */
+		static void circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _in = true);
 
 	private:
 		/**

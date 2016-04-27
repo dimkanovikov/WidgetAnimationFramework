@@ -41,7 +41,8 @@ namespace WAF
 		enum AnimatorType {
 			SideSlide,
 			Slide,
-			Popup
+			Popup,
+			CircleFill
 		};
 
 	public:

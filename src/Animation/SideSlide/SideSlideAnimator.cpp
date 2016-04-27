@@ -186,7 +186,7 @@ void SideSlideAnimator::slideOut()
 	//
 	// Прерываем выполнение, если клиент хочет повторить его
 	//
-	if (isAnimated() && !isAnimatedForward()) return;
+	if (isAnimated() && isAnimatedBackward()) return;
 	setAnimatedBackward();
 
 	if (widgetForSlide()->isVisible()) {

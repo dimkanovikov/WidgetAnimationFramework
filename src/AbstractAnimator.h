@@ -72,9 +72,14 @@ namespace WAF
 		/**
 		 * @brief Направление последней анимации
 		 */
+		/** @{ */
 		bool isAnimatedForward() const {
 			return m_isAnimatedForward;
 		}
+		bool isAnimatedBackward() const {
+			return !isAnimatedForward();
+		}
+		/** @} */
 
 	private:
 		/**
