@@ -42,7 +42,8 @@ namespace WAF
 			SideSlide,
 			Slide,
 			Popup,
-			CircleFill
+			CircleFill,
+			Expand
 		};
 
 	public:

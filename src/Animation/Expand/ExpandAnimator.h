@@ -14,11 +14,13 @@
  * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
  */
 
-#ifndef CIRCLEFILLANIMATOR_H
-#define CIRCLEFILLANIMATOR_H
+#ifndef EXPANDANIMATOR_H
+#define EXPANDANIMATOR_H
 
 #include "../../WAF.h"
 #include "../../AbstractAnimator.h"
+
+#include <QRect>
 
 class QPropertyAnimation;
 
@@ -28,22 +30,22 @@ class QPropertyAnimation;
  */
 namespace WAF
 {
-    class CircleFillDecorator;
+    class ExpandDecorator;
 
     /**
-     * @brief Аниматор заполнения цветным кругом
+     * @brief Аниматор выводящий элемент на передний план и заполняющий пространство
      */
-    class CircleFillAnimator : public AbstractAnimator
+    class ExpandAnimator : public AbstractAnimator
     {
         Q_OBJECT
 
     public:
-        explicit CircleFillAnimator(QWidget* _widgetForFill);
+        explicit ExpandAnimator(QWidget* _widgetForFill);
 
         /**
-         * @brief Установить точку начала анимации
+         * @brief Установить область для выведения на передний план
          */
-        void setStartPoint(const QPoint& _point);
+        void setExpandRect(const QRect& _rect);
 
         /**
          * @brief Установить цвет заливки
@@ -60,7 +62,7 @@ namespace WAF
          */
         /** @{ */
         void animateForward();
-        void fillIn();
+        void expandIn();
         /** @} */
 
         /**
@@ -68,13 +70,14 @@ namespace WAF
          */
         /** @{ */
         void animateBackward();
-        void fillOut();
+        void expandOut();
         /** @} */
 
+    protected:
         /**
-         * @brief Скрыть декоратор
+         * @brief Переопределяется, чтобы корректировать размер перекрывающего виджета
          */
-        void hideDecorator();
+        bool eventFilter(QObject* _object, QEvent* _event);
 
     private:
         /**
@@ -84,9 +87,14 @@ namespace WAF
 
     private:
         /**
+         * @brief Исходная область для выдвижения
+         */
+        QRect m_expandRect;
+
+        /**
          * @brief Декоратор, рисующий заполнение
          */
-        CircleFillDecorator* m_decorator;
+        ExpandDecorator* m_decorator;
 
         /**
          * @brief Объект для анимирования декоратора
@@ -95,4 +103,4 @@ namespace WAF
     };
 }
 
-#endif // CIRCLEFILLANIMATOR_H
+#endif // EXPANDANIMATOR_H

@@ -60,6 +60,11 @@ void StackedWidgetSlideAnimator::setAnimationDirection(WAF::AnimationDirection _
 	}
 }
 
+int StackedWidgetSlideAnimator::animationDuration() const
+{
+	return m_containerAnimation->duration();
+}
+
 void StackedWidgetSlideAnimator::animateForward()
 {
 	slide();
@@ -157,7 +162,9 @@ void StackedWidgetSlideAnimator::slide()
 bool StackedWidgetSlideAnimator::eventFilter(QObject* _object, QEvent* _event)
 {
 	if (_object == widgetForSlide()
-		&& _event->type() == QEvent::Resize) {
+		&& _event->type() == QEvent::Resize
+		&& m_containerDecorator->isVisible()
+		&& m_widgetDecorator->isVisible()) {
 		m_containerDecorator->grabWidget();
 		m_widgetDecorator->grabWidget();
 	}

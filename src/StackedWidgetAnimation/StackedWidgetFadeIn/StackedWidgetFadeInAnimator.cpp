@@ -25,43 +25,33 @@ using WAF::StackedWidgetFadeInAnimator;
 using WAF::StackedWidgetFadeInDecorator;
 
 
-StackedWidgetFadeInAnimator::StackedWidgetFadeInAnimator(QStackedWidget* _container, QWidget* _widgetForSlide) :
+StackedWidgetFadeInAnimator::StackedWidgetFadeInAnimator(QStackedWidget* _container, QWidget* _fadeWidget) :
 	AbstractAnimator(_container),
-	m_containerDecorator(new StackedWidgetFadeInDecorator(_container, _container->currentWidget())),
-	m_widgetDecorator(new StackedWidgetFadeInDecorator(_container, _widgetForSlide)),
-	m_containerAnimation(new QPropertyAnimation(m_containerDecorator, "opacity")),
-	m_widgetAnimation(new QPropertyAnimation(m_widgetDecorator, "opacity"))
+	m_decorator(new StackedWidgetFadeInDecorator(_container, _fadeWidget)),
+	m_animation(new QPropertyAnimation(m_decorator, "opacity"))
 {
 	Q_ASSERT(_container);
-	Q_ASSERT(_widgetForSlide);
+	Q_ASSERT(_fadeWidget);
 
 	_container->installEventFilter(this);
 
-	m_containerAnimation->setDuration(200);
-	m_widgetAnimation->setDuration(200);
+	m_animation->setDuration(200);
 
-	m_containerDecorator->hide();
-	m_widgetDecorator->hide();
+	m_decorator->hide();
 
-	connect(m_containerAnimation, &QPropertyAnimation::finished, [=] {
-		m_widgetDecorator->move(0, 0);
-		m_widgetDecorator->show();
-		m_widgetDecorator->raise();
-		m_widgetAnimation->start();
-	});
-	connect(m_widgetAnimation, &QPropertyAnimation::finished, [=] {
+	connect(m_animation, &QPropertyAnimation::finished, [=] {
 		setAnimatedStopped();
 
-		_container->setCurrentWidget(_widgetForSlide);
-		m_containerDecorator->hide();
-		m_widgetDecorator->hide();
+		if (m_animation->direction() == QPropertyAnimation::Forward) {
+			_container->setCurrentWidget(_fadeWidget);
+		}
+		m_decorator->hide();
 	});
 }
 
-void StackedWidgetFadeInAnimator::setFadeInColor(const QColor& _fadeInColor)
+int StackedWidgetFadeInAnimator::animationDuration() const
 {
-	m_containerDecorator->setFadeInColor(_fadeInColor);
-	m_widgetDecorator->setFadeInColor(_fadeInColor);
+	return m_animation->duration();
 }
 
 void StackedWidgetFadeInAnimator::animateForward()
@@ -80,61 +70,59 @@ void StackedWidgetFadeInAnimator::fadeIn()
 	//
 	// Обновляем изображения виджетов в декораторах
 	//
-	m_containerDecorator->grabContainer();
-	m_widgetDecorator->grabWidget();
+	m_decorator->grabContainer();
+	m_decorator->grabFadeWidget();
 
 	//
 	// Определим стартовые и финальные позиции для декораций
 	//
-	qreal containerStartOpacity = 1;
-	qreal containerEndOpacity = 0;
-	qreal widgetStartOpacity = 0;
-	qreal widgetEndOpacity = 1;
+	qreal startOpacity = 0.;
+	qreal finalOpacity = 1.;
 
 	//
 	// Позиционируем декораторы
 	//
-	m_containerDecorator->setOpacity(containerStartOpacity);
-	m_containerDecorator->move(0, 0);
-	m_containerDecorator->show();
-	m_containerDecorator->raise();
+	m_decorator->setOpacity(startOpacity);
+	m_decorator->move(0, 0);
+	m_decorator->show();
+	m_decorator->raise();
 
 	//
 	// Анимируем виджет
 	//
-	if (m_widgetAnimation->state() == QPropertyAnimation::Running) {
+	if (m_animation->state() == QPropertyAnimation::Running) {
 		//
-		// ... если ещё не закончилась предыдущая анимация реверсируем её ничего не делаем
+		// ... если ещё не закончилась предыдущая анимация реверсируем её
 		//
+		m_animation->pause();
+		m_animation->setDirection(QPropertyAnimation::Backward);
+		m_animation->resume();
 	} else {
 		//
 		// ... если предыдущая анимация закончилась, запускаем новую анимацию
 		//
-		m_containerAnimation->setEasingCurve(QEasingCurve::InQuad);
-		m_containerAnimation->setDirection(QPropertyAnimation::Forward);
-		m_containerAnimation->setStartValue(containerStartOpacity);
-		m_containerAnimation->setEndValue(containerEndOpacity);
-		m_widgetAnimation->setEasingCurve(QEasingCurve::OutQuad);
-		m_widgetAnimation->setDirection(QPropertyAnimation::Forward);
-		m_widgetAnimation->setStartValue(widgetStartOpacity);
-		m_widgetAnimation->setEndValue(widgetEndOpacity);
+		m_animation->setEasingCurve(QEasingCurve::InQuad);
+		m_animation->setDirection(QPropertyAnimation::Forward);
+		m_animation->setStartValue(startOpacity);
+		m_animation->setEndValue(finalOpacity);
 
-		m_containerAnimation->start();
+		m_animation->start();
 	}
 }
 
 bool StackedWidgetFadeInAnimator::eventFilter(QObject* _object, QEvent* _event)
 {
-	if (_object == widgetForSlide()
-		&& _event->type() == QEvent::Resize) {
-		m_containerDecorator->grabWidget();
-		m_widgetDecorator->grabWidget();
+	if (_object == fadeWidget()
+		&& _event->type() == QEvent::Resize
+		&& m_decorator->isVisible()) {
+		m_decorator->grabContainer();
+		m_decorator->grabFadeWidget();
 	}
 
 	return QObject::eventFilter(_object, _event);
 }
 
-QWidget* StackedWidgetFadeInAnimator::widgetForSlide() const
+QWidget* StackedWidgetFadeInAnimator::fadeWidget() const
 {
 	return qobject_cast<QWidget*>(parent());
 }

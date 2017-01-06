@@ -22,13 +22,12 @@
 using WAF::StackedWidgetFadeInDecorator;
 
 
-StackedWidgetFadeInDecorator::StackedWidgetFadeInDecorator(QWidget* _parent, QWidget* _widgetForGrab, const QColor& _fadeInColor) :
+StackedWidgetFadeInDecorator::StackedWidgetFadeInDecorator(QWidget* _parent, QWidget* _fadeWidget) :
 	QWidget(_parent),
 	m_opacity(1),
-	m_widgetForGrab(_widgetForGrab),
-	m_fadeInColor(_fadeInColor)
+	m_fadeWidget(_fadeWidget)
 {
-	grabWidget();
+	grabFadeWidget();
 }
 
 qreal StackedWidgetFadeInDecorator::opacity() const
@@ -41,41 +40,39 @@ void StackedWidgetFadeInDecorator::setOpacity(qreal _opacity)
 	if (m_opacity != _opacity) {
 		m_opacity = _opacity;
 
-		repaint();
-	}
-}
-
-void StackedWidgetFadeInDecorator::setFadeInColor(const QColor& _fadeInColor)
-{
-	if (m_fadeInColor != _fadeInColor) {
-		m_fadeInColor = _fadeInColor;
+		update();
 	}
 }
 
 void StackedWidgetFadeInDecorator::grabContainer()
 {
 	if (QStackedWidget* container = qobject_cast<QStackedWidget*>(parentWidget())) {
-		m_widgetForGrab = container->currentWidget();
-		grabWidget();
+		m_containerPixmap = grabWidget(container->currentWidget());
 	}
 }
 
-void StackedWidgetFadeInDecorator::grabWidget()
+void StackedWidgetFadeInDecorator::grabFadeWidget()
 {
-	const QSize size = parentWidget()->size();
-	m_widgetForGrab->resize(size);
-	resize(size);
-	m_foreground = QPixmap(size);
-	m_widgetForGrab->render(&m_foreground, QPoint(), QRegion(QRect(QPoint(), size)));
+	m_fadeWidgetPixmap = grabWidget(m_fadeWidget);
 }
 
 void StackedWidgetFadeInDecorator::paintEvent(QPaintEvent* _event)
 {
 	QPainter painter(this);
-	painter.fillRect(rect(), m_fadeInColor);
+	painter.drawPixmap(0, 0, m_containerPixmap);
 	painter.setOpacity(m_opacity);
-	painter.drawPixmap(0, 0, m_foreground);
+	painter.drawPixmap(0, 0, m_fadeWidgetPixmap);
 
 	QWidget::paintEvent(_event);
+}
+
+QPixmap StackedWidgetFadeInDecorator::grabWidget(QWidget* _widgetForGrab)
+{
+	const QSize size = parentWidget()->size();
+	_widgetForGrab->resize(size);
+	resize(size);
+	QPixmap widgetPixmap(size);
+	_widgetForGrab->render(&widgetPixmap, QPoint(), QRegion(QRect(QPoint(), size)));
+	return widgetPixmap;
 }
 

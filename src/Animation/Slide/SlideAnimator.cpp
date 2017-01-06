@@ -29,6 +29,7 @@ SlideAnimator::SlideAnimator(QWidget* _widgetForSlide) :
 	AbstractAnimator(_widgetForSlide),
 	m_direction(WAF::FromLeftToRight),
 	m_isFixBackground(true),
+    m_isFixStartSize(false),
 	m_animation(new QPropertyAnimation(_widgetForSlide, "maximumSize")),
 	m_decorator(new SlideForegroundDecorator(_widgetForSlide))
 {
@@ -39,19 +40,37 @@ SlideAnimator::SlideAnimator(QWidget* _widgetForSlide) :
 
 	m_decorator->hide();
 
-	connect(m_animation, &QPropertyAnimation::finished, [=](){
+	connect(m_animation, &QPropertyAnimation::valueChanged, [=] {
+		widgetForSlide()->setMinimumSize(widgetForSlide()->maximumSize());
+	});
+	//
+	// Корректировки размера по завершению
+	//
+	connect(m_animation, &QPropertyAnimation::finished, [=] {
 		setAnimatedStopped();
 		m_decorator->hide();
 
 		//
 		// Отменяем фиксацию размера в направлении, которое может изменяться
 		//
-		const int max = 16777215;
-		if (m_direction == WAF::FromLeftToRight
-			|| m_direction == WAF::FromRightToLeft) {
-			widgetForSlide()->setMaximumHeight(max);
+		if (isAnimatedBackward()) {
+			widgetForSlide()->setMinimumSize(m_startMinSize);
+			if (m_direction == WAF::FromLeftToRight
+				|| m_direction == WAF::FromRightToLeft) {
+				widgetForSlide()->setMinimumHeight(m_startMinSize.height());
+				widgetForSlide()->setMaximumHeight(m_startMaxSize.height());
+			} else {
+				widgetForSlide()->setMinimumWidth(m_startMinSize.width());
+				widgetForSlide()->setMaximumWidth(m_startMaxSize.width());
+			}
 		} else {
-			widgetForSlide()->setMaximumWidth(max);
+			widgetForSlide()->setMaximumSize(m_startMaxSize);
+			if (m_direction == WAF::FromLeftToRight
+				|| m_direction == WAF::FromRightToLeft) {
+				widgetForSlide()->setMinimumHeight(m_startMinSize.height());
+			} else {
+				widgetForSlide()->setMinimumWidth(m_startMinSize.width());
+			}
 		}
 	});
 }
@@ -67,7 +86,19 @@ void SlideAnimator::setFixBackground(bool _fix)
 {
 	if (m_isFixBackground != _fix) {
 		m_isFixBackground = _fix;
-	}
+    }
+}
+
+void SlideAnimator::setFixStartSize(bool _fix)
+{
+    if (m_isFixStartSize != _fix) {
+        m_isFixStartSize = _fix;
+    }
+}
+
+int SlideAnimator::animationDuration() const
+{
+	return m_animation->duration();
 }
 
 void SlideAnimator::animateForward()
@@ -77,6 +108,16 @@ void SlideAnimator::animateForward()
 
 void SlideAnimator::slideIn()
 {
+    if (!m_startMinSize.isValid()) {
+        m_startMinSize = widgetForSlide()->minimumSize();
+    }
+    if (!m_startMaxSize.isValid()) {
+        m_startMaxSize = widgetForSlide()->maximumSize();
+    }
+    if (!m_startSize.isValid()) {
+        m_startSize = widgetForSlide()->sizeHint();
+    }
+
 	//
 	// Прерываем выполнение, если клиент хочет повторить его
 	//
@@ -109,13 +150,13 @@ void SlideAnimator::slideIn()
 	switch (m_direction) {
 		case WAF::FromLeftToRight:
 		case WAF::FromRightToLeft: {
-			finalSize.setWidth(widgetForSlide()->sizeHint().width());
+			finalSize.setWidth(m_startSize.width());
 			break;
 		}
 
 		case WAF::FromTopToBottom:
 		case WAF::FromBottomToTop: {
-			finalSize.setHeight(widgetForSlide()->sizeHint().height());
+			finalSize.setHeight(m_startSize.height());
 			break;
 		}
 	}
@@ -127,9 +168,9 @@ void SlideAnimator::slideIn()
 	//		 если высота или ширина равны нулю, поэтому применяем небольшую хитрость
 	//
 	widgetForSlide()->hide();
-	widgetForSlide()->setMaximumSize(finalSize);
+	widgetForSlide()->setFixedSize(finalSize);
 	m_decorator->grabParent(finalSize);
-	widgetForSlide()->setMaximumSize(currentSize);
+	widgetForSlide()->setFixedSize(currentSize);
 	widgetForSlide()->show();
 
 	if (m_isFixBackground) {
@@ -170,6 +211,16 @@ void SlideAnimator::animateBackward()
 
 void SlideAnimator::slideOut()
 {
+    if (!m_startMinSize.isValid()) {
+        m_startMinSize = widgetForSlide()->minimumSize();
+    }
+    if (!m_startMaxSize.isValid()) {
+        m_startMaxSize = widgetForSlide()->maximumSize();
+    }
+    if (!m_startSize.isValid() || !m_isFixStartSize) {
+        m_startSize = widgetForSlide()->size();
+    }
+
 	//
 	// Прерываем выполнение, если клиент хочет повторить его
 	//
@@ -233,7 +284,8 @@ void SlideAnimator::slideOut()
 bool SlideAnimator::eventFilter(QObject* _object, QEvent* _event)
 {
 	if (_object == widgetForSlide()
-		&& _event->type() == QEvent::Resize) {
+		&& _event->type() == QEvent::Resize
+		&& m_decorator->isVisible()) {
 		switch (m_direction) {
 			case WAF::FromLeftToRight: {
 				m_decorator->move(widgetForSlide()->width() - m_decorator->width(), 0);

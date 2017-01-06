@@ -16,8 +16,9 @@ CircleFillDecorator::CircleFillDecorator(QWidget* _parent) :
 
 void CircleFillDecorator::setStartPoint(const QPoint& _point)
 {
-	if (m_startPoint != _point) {
-		m_startPoint = _point;
+	QPoint localStartPoint = mapFromGlobal(_point);
+	if (m_startPoint != localStartPoint) {
+		m_startPoint = localStartPoint;
 	}
 }
 

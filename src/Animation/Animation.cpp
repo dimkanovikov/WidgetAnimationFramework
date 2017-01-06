@@ -17,11 +17,12 @@
 #include "Animation.h"
 #include "AnimationPrivate.h"
 
-#include <AbstractAnimator.h>
+#include "../AbstractAnimator.h"
 
-#include <Animation/SideSlide/SideSlideAnimator.h>
-#include <Animation/Slide/SlideAnimator.h>
-#include <Animation/CircleFill/CircleFillAnimator.h>
+#include "SideSlide/SideSlideAnimator.h"
+#include "Slide/SlideAnimator.h"
+#include "CircleFill/CircleFillAnimator.h"
+#include "Expand/ExpandAnimator.h"
 
 using WAF::Animation;
 using WAF::AnimationPrivate;
@@ -29,116 +30,152 @@ using WAF::AbstractAnimator;
 using WAF::SideSlideAnimator;
 using WAF::SlideAnimator;
 using WAF::CircleFillAnimator;
+using WAF::ExpandAnimator;
 
 
-void Animation::sideSlideIn(QWidget* _widget, WAF::ApplicationSide _side, bool _decorateBackground)
+int Animation::sideSlideIn(QWidget* _widget, WAF::ApplicationSide _side, bool _decorateBackground)
 {
-	const bool IN = true;
-	sideSlide(_widget, _side, _decorateBackground, IN);
+    const bool IN = true;
+    return sideSlide(_widget, _side, _decorateBackground, IN);
 }
 
-void Animation::sideSlideOut(QWidget* _widget, WAF::ApplicationSide _side, bool _decorateBackground)
+int Animation::sideSlideOut(QWidget* _widget, WAF::ApplicationSide _side, bool _decorateBackground)
 {
-	const bool OUT = false;
-	sideSlide(_widget, _side, _decorateBackground, OUT);
+    const bool OUT = false;
+    return sideSlide(_widget, _side, _decorateBackground, OUT);
 }
 
-void Animation::sideSlide(QWidget* _widget, WAF::ApplicationSide _side, bool _decorateBackground, bool _in)
+int Animation::sideSlide(QWidget* _widget, WAF::ApplicationSide _side, bool _decorateBackground, bool _in)
 {
-	const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::SideSlide;
-	AbstractAnimator* animator = 0;
-	if (pimpl()->hasAnimator(_widget, animatorType)) {
-		animator = pimpl()->animator(_widget, animatorType);
-		if (SideSlideAnimator* sideSlideAnimator = qobject_cast<SideSlideAnimator*>(animator)) {
-			sideSlideAnimator->setApplicationSide(_side);
-			sideSlideAnimator->setDecorateBackground(_decorateBackground);
-		}
-	} else {
-		SideSlideAnimator* sideSlideAnimator = new SideSlideAnimator(_widget);
-		sideSlideAnimator->setApplicationSide(_side);
-		sideSlideAnimator->setDecorateBackground(_decorateBackground);
-		animator = sideSlideAnimator;
+    const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::SideSlide;
+    AbstractAnimator* animator = 0;
+    if (pimpl()->hasAnimator(_widget, animatorType)) {
+        animator = pimpl()->animator(_widget, animatorType);
+        if (SideSlideAnimator* sideSlideAnimator = qobject_cast<SideSlideAnimator*>(animator)) {
+            sideSlideAnimator->setApplicationSide(_side);
+            sideSlideAnimator->setDecorateBackground(_decorateBackground);
+        }
+    } else {
+        SideSlideAnimator* sideSlideAnimator = new SideSlideAnimator(_widget);
+        sideSlideAnimator->setApplicationSide(_side);
+        sideSlideAnimator->setDecorateBackground(_decorateBackground);
+        animator = sideSlideAnimator;
 
-		pimpl()->saveAnimator(_widget, animator, animatorType);
-	}
+        pimpl()->saveAnimator(_widget, animator, animatorType);
+    }
 
-	if (_in) {
-		animator->animateForward();
-	} else {
-		animator->animateBackward();
-	}
+    return runAnimation(animator, _in);
 }
 
-void Animation::slideIn(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground)
+int Animation::slideIn(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground, bool _fixStartSize)
 {
-	const bool IN = true;
-	slide(_widget, _direction, _fixBackground, IN);
+    const bool IN = true;
+    return slide(_widget, _direction, _fixBackground, _fixStartSize, IN);
 }
 
-void Animation::slideOut(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground)
+int Animation::slideOut(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground, bool _fixStartSize)
 {
-	const bool OUT = false;
-	slide(_widget, _direction, _fixBackground, OUT);
+    const bool OUT = false;
+    return slide(_widget, _direction, _fixBackground, _fixStartSize, OUT);
 }
 
-void Animation::slide(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground, bool _in)
+int Animation::slide(QWidget* _widget, WAF::AnimationDirection _direction, bool _fixBackground, bool _fixStartSize, bool _in)
 {
-	const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::Slide;
-	AbstractAnimator* animator = 0;
-	if (pimpl()->hasAnimator(_widget, animatorType)) {
-		animator = pimpl()->animator(_widget, animatorType);
-		if (SlideAnimator* slideAnimator = qobject_cast<SlideAnimator*>(animator)) {
-			slideAnimator->setAnimationDirection(_direction);
-			slideAnimator->setFixBackground(_fixBackground);
-		}
-	} else {
-		SlideAnimator* slideAnimator = new SlideAnimator(_widget);
-		slideAnimator->setAnimationDirection(_direction);
-		slideAnimator->setFixBackground(_fixBackground);
-		animator = slideAnimator;
+    const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::Slide;
+    AbstractAnimator* animator = 0;
+    if (pimpl()->hasAnimator(_widget, animatorType)) {
+        animator = pimpl()->animator(_widget, animatorType);
+        if (SlideAnimator* slideAnimator = qobject_cast<SlideAnimator*>(animator)) {
+            slideAnimator->setAnimationDirection(_direction);
+            slideAnimator->setFixBackground(_fixBackground);
+            slideAnimator->setFixStartSize(_fixStartSize);
+        }
+    } else {
+        SlideAnimator* slideAnimator = new SlideAnimator(_widget);
+        slideAnimator->setAnimationDirection(_direction);
+        slideAnimator->setFixBackground(_fixBackground);
+        slideAnimator->setFixStartSize(_fixStartSize);
+        animator = slideAnimator;
 
-		pimpl()->saveAnimator(_widget, animator, animatorType);
-	}
+        pimpl()->saveAnimator(_widget, animator, animatorType);
+    }
 
-	if (_in) {
-		animator->animateForward();
-	} else {
-		animator->animateBackward();
-	}
+    return runAnimation(animator, _in);
 }
 
-void Animation::circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _in)
+int Animation::circleFillIn(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor)
 {
-	const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::CircleFill;
-	AbstractAnimator* animator = 0;
-	if (pimpl()->hasAnimator(_widget, animatorType)) {
-		animator = pimpl()->animator(_widget, animatorType);
-		if (CircleFillAnimator* circleFillAnimator = qobject_cast<CircleFillAnimator*>(animator)) {
-			circleFillAnimator->setStartPoint(_startPoint);
-			circleFillAnimator->setFillColor(_fillColor);
-		}
-	} else {
-		CircleFillAnimator* circleFillAnimator = new CircleFillAnimator(_widget);
-		circleFillAnimator->setStartPoint(_startPoint);
-		circleFillAnimator->setFillColor(_fillColor);
-		animator = circleFillAnimator;
+    const bool IN = true;
+    return circleFill(_widget, _startPoint, _fillColor, IN);
+}
 
-		pimpl()->saveAnimator(_widget, animator, animatorType);
-	}
+int Animation::circleFillOut(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor)
+{
+    const bool OUT = false;
+    return circleFill(_widget, _startPoint, _fillColor, OUT);
+}
 
-	if (_in) {
-		animator->animateForward();
-	} else {
-		animator->animateBackward();
-	}
+int Animation::circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _in)
+{
+    const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::CircleFill;
+    AbstractAnimator* animator = 0;
+    if (pimpl()->hasAnimator(_widget, animatorType)) {
+        animator = pimpl()->animator(_widget, animatorType);
+        if (CircleFillAnimator* circleFillAnimator = qobject_cast<CircleFillAnimator*>(animator)) {
+            circleFillAnimator->setStartPoint(_startPoint);
+            circleFillAnimator->setFillColor(_fillColor);
+        }
+    } else {
+        CircleFillAnimator* circleFillAnimator = new CircleFillAnimator(_widget);
+        circleFillAnimator->setStartPoint(_startPoint);
+        circleFillAnimator->setFillColor(_fillColor);
+        animator = circleFillAnimator;
+
+        pimpl()->saveAnimator(_widget, animator, animatorType);
+    }
+
+    return runAnimation(animator, _in);
+}
+
+int Animation::expand(QWidget* _widget, const QRect& _expandRect, const QColor& _fillColor, bool _in)
+{
+    const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::Expand;
+    AbstractAnimator* animator = 0;
+    if (pimpl()->hasAnimator(_widget, animatorType)) {
+        animator = pimpl()->animator(_widget, animatorType);
+        if (ExpandAnimator* expandAnimator = qobject_cast<ExpandAnimator*>(animator)) {
+            expandAnimator->setExpandRect(_expandRect);
+            expandAnimator->setFillColor(_fillColor);
+        }
+    } else {
+        ExpandAnimator* expandAnimator = new ExpandAnimator(_widget);
+        expandAnimator->setExpandRect(_expandRect);
+        expandAnimator->setFillColor(_fillColor);
+        animator = expandAnimator;
+
+        pimpl()->saveAnimator(_widget, animator, animatorType);
+    }
+
+    return runAnimation(animator, _in);
+}
+
+int Animation::runAnimation(AbstractAnimator* _animator, bool _in)
+{
+    if (_in) {
+        _animator->animateForward();
+    } else {
+        _animator->animateBackward();
+    }
+
+    return _animator->animationDuration();
 }
 
 AnimationPrivate* Animation::m_pimpl = 0;
 AnimationPrivate* Animation::pimpl()
 {
-	if (m_pimpl == 0) {
-		m_pimpl = new AnimationPrivate;
-	}
+    if (m_pimpl == 0) {
+        m_pimpl = new AnimationPrivate;
+    }
 
-	return m_pimpl;
+    return m_pimpl;
 }

@@ -17,8 +17,10 @@
 #ifndef SLIDEANIMATOR_H
 #define SLIDEANIMATOR_H
 
-#include <WAF.h>
-#include <AbstractAnimator.h>
+#include "../../WAF.h"
+#include "../../AbstractAnimator.h"
+
+#include <QSize>
 
 class QPropertyAnimation;
 
@@ -28,78 +30,98 @@ class QPropertyAnimation;
  */
 namespace WAF
 {
-	class SlideForegroundDecorator;
+    class SlideForegroundDecorator;
 
 
-	/**
-	 * @brief Аниматор выдвижения виджета
-	 */
-	class SlideAnimator : public AbstractAnimator
-	{
-		Q_OBJECT
+    /**
+     * @brief Аниматор выдвижения виджета
+     */
+    class SlideAnimator : public AbstractAnimator
+    {
+        Q_OBJECT
 
-	public:
-		explicit SlideAnimator(QWidget* _widgetForSlide);
+    public:
+        explicit SlideAnimator(QWidget* _widgetForSlide);
 
-		/**
-		 * @brief Установить направление выдвижения
-		 */
-		void setAnimationDirection(AnimationDirection _direction);
+        /**
+         * @brief Установить направление выдвижения
+         */
+        void setAnimationDirection(AnimationDirection _direction);
 
-		/**
-		 * @brief Фиксировать фон при анимации (по умолчанию фон фиксируется)
-		 */
-		void setFixBackground(bool _fix);
+        /**
+         * @brief Фиксировать фон при анимации (по умолчанию фон фиксируется)
+         */
+        void setFixBackground(bool _fix);
 
-		/**
-		 * @brief Выдвинуть виджет
-		 */
-		/** @{ */
-		void animateForward();
-		void slideIn();
-		/** @} */
+        /**
+         * @brief Запоминать стартовый размер виджета (по-умолчанию не запоминается)
+         */
+        void setFixStartSize(bool _fix);
 
-		/**
-		 * @brief Задвинуть виджет
-		 */
-		/** @{ */
-		void animateBackward();
-		void slideOut();
-		/** @} */
+        /**
+         * @brief Длительность анимации
+         */
+        int animationDuration() const;
 
-	protected:
-		/**
-		 * @brief Переопределяется, чтобы корректировать позицию перекрывающего виджета
-		 */
-		bool eventFilter(QObject* _object, QEvent* _event);
+        /**
+         * @brief Выдвинуть виджет
+         */
+        /** @{ */
+        void animateForward();
+        void slideIn();
+        /** @} */
 
-	private:
-		/**
-		 * @brief Получить виджет, который нужно анимировать
-		 */
-		QWidget* widgetForSlide() const;
+        /**
+         * @brief Задвинуть виджет
+         */
+        /** @{ */
+        void animateBackward();
+        void slideOut();
+        /** @} */
 
-	private:
-		/**
-		 * @brief Направление, по которому выкатывать виджет
-		 */
-		AnimationDirection m_direction;
+    protected:
+        /**
+         * @brief Переопределяется, чтобы корректировать позицию перекрывающего виджета
+         */
+        bool eventFilter(QObject* _object, QEvent* _event);
 
-		/**
-		 * @brief Фиксировать фон при анимации
-		 */
-		bool m_isFixBackground;
+    private:
+        /**
+         * @brief Получить виджет, который нужно анимировать
+         */
+        QWidget* widgetForSlide() const;
 
-		/**
-		 * @brief Объект для анимирования выезжания
-		 */
-		QPropertyAnimation* m_animation;
+    private:
+        /**
+         * @brief Направление, по которому выкатывать виджет
+         */
+        AnimationDirection m_direction;
 
-		/**
-		 * @brief Помошник перекрывающий анимируемый виджет
-		 */
-		SlideForegroundDecorator* m_decorator;
-	};
+        /**
+         * @brief Фиксировать фон при анимации
+         */
+        bool m_isFixBackground;
+
+        /**
+         * @brief Необходимо ли запоминать стартовый размер виджета
+         */
+        bool m_isFixStartSize;
+
+        /**
+         * @brief Исходные метрики анимируемого виджета
+         */
+        QSize m_startMinSize, m_startMaxSize, m_startSize;
+
+        /**
+         * @brief Объект для анимирования выезжания
+         */
+        QPropertyAnimation* m_animation;
+
+        /**
+         * @brief Помошник перекрывающий анимируемый виджет
+         */
+        SlideForegroundDecorator* m_decorator;
+    };
 }
 
 #endif // SLIDEANIMATOR_H

@@ -17,8 +17,8 @@
 #ifndef STACKEDWIDGETFADEINANIMATOR_H
 #define STACKEDWIDGETFADEINANIMATOR_H
 
-#include <WAF.h>
-#include <AbstractAnimator.h>
+#include "../../WAF.h"
+#include "../../AbstractAnimator.h"
 
 class QPropertyAnimation;
 class QStackedWidget;
@@ -29,66 +29,60 @@ class QStackedWidget;
  */
 namespace WAF
 {
-	class StackedWidgetFadeInDecorator;
+    class StackedWidgetFadeInDecorator;
 
 
-	/**
-	 * @brief Аниматор появления виджета из стека с пропаданием текущего виджета
-	 */
-	class StackedWidgetFadeInAnimator : public AbstractAnimator
-	{
-		Q_OBJECT
+    /**
+     * @brief Аниматор появления виджета из стека с пропаданием текущего виджета
+     */
+    class StackedWidgetFadeInAnimator : public AbstractAnimator
+    {
+        Q_OBJECT
 
-	public:
-		explicit StackedWidgetFadeInAnimator(QStackedWidget* _container, QWidget* _widgetForSlide);
+    public:
+        explicit StackedWidgetFadeInAnimator(QStackedWidget* _container, QWidget* _fadeWidget);
 
-		/**
-		 * @brief Установить цвет растворения
-		 */
-		void setFadeInColor(const QColor& _fadeInColor);
+        /**
+         * @brief Длительность анимации
+         */
+        int animationDuration() const;
 
-		/**
-		 * @brief Выдвинуть виджет
-		 */
-		/** @{ */
-		void animateForward();
-		void fadeIn();
-		/** @} */
+        /**
+         * @brief Отобразить виджет
+         */
+        /** @{ */
+        void animateForward();
+        void fadeIn();
+        /** @} */
 
-		/**
-		 * @brief Обратной анимации для данного случая нет
-		 */
-		void animateBackward() {}
+        /**
+         * @brief Обратной анимации для данного случая нет
+         */
+        void animateBackward() {}
 
-	protected:
-		/**
-		 * @brief Переопределяется, чтобы корректировать позицию перекрывающего виджета
-		 */
-		bool eventFilter(QObject* _object, QEvent* _event);
+    protected:
+        /**
+         * @brief Переопределяется, чтобы корректировать позицию перекрывающего виджета
+         */
+        bool eventFilter(QObject* _object, QEvent* _event);
 
-	private:
-		/**
-		 * @brief Получить виджет, который нужно анимировать
-		 */
-		QWidget* widgetForSlide() const;
+    private:
+        /**
+         * @brief Получить виджет, который нужно анимировать
+         */
+        QWidget* fadeWidget() const;
 
-	private:
-		/**
-		 * @brief Помошники
-		 */
-		/** @{ */
-		StackedWidgetFadeInDecorator* m_containerDecorator;
-		StackedWidgetFadeInDecorator* m_widgetDecorator;
-		/** @} */
+    private:
+        /**
+         * @brief Помошник
+         */
+        StackedWidgetFadeInDecorator* m_decorator;
 
-		/**
-		 * @brief Объекты для анимирования выезжания
-		 */
-		/** @{ */
-		QPropertyAnimation* m_containerAnimation;
-		QPropertyAnimation* m_widgetAnimation;
-		/** @} */
-	};
+        /**
+         * @brief Объект для анимирования появления
+         */
+        QPropertyAnimation* m_animation;
+    };
 }
 
 #endif // STACKEDWIDGETFADEINANIMATOR_H

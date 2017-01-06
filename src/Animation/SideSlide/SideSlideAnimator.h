@@ -17,8 +17,8 @@
 #ifndef SIDESLIDEANIMATOR_H
 #define SIDESLIDEANIMATOR_H
 
-#include <WAF.h>
-#include <AbstractAnimator.h>
+#include "../../WAF.h"
+#include "../../AbstractAnimator.h"
 
 class QPropertyAnimation;
 
@@ -28,78 +28,83 @@ class QPropertyAnimation;
  */
 namespace WAF
 {
-	class SideSlideBackgroundDecorator;
+    class SideSlideBackgroundDecorator;
 
 
-	/**
-	 * @brief Аниматор выдвижения виджета из-за стороны приложения
-	 */
-	class SideSlideAnimator : public AbstractAnimator
-	{
-		Q_OBJECT
+    /**
+     * @brief Аниматор выдвижения виджета из-за стороны приложения
+     */
+    class SideSlideAnimator : public AbstractAnimator
+    {
+        Q_OBJECT
 
-	public:
-		explicit SideSlideAnimator(QWidget* _widgetForSlide);
+    public:
+        explicit SideSlideAnimator(QWidget* _widgetForSlide);
 
-		/**
-		 * @brief Установить сторону, откуда выдвигать виджет
-		 */
-		void setApplicationSide(ApplicationSide _side);
+        /**
+         * @brief Установить сторону, откуда выдвигать виджет
+         */
+        void setApplicationSide(ApplicationSide _side);
 
-		/**
-		 * @brief Использовать ли декорирование фона
-		 */
-		void setDecorateBackground(bool _decorate);
+        /**
+         * @brief Использовать ли декорирование фона
+         */
+        void setDecorateBackground(bool _decorate);
 
-		/**
-		 * @brief Выдвинуть виджет
-		 */
-		/** @{ */
-		void animateForward();
-		void slideIn();
-		/** @} */
+        /**
+         * @brief Длительность анимации
+         */
+        int animationDuration() const;
 
-		/**
-		 * @brief Задвинуть виджет
-		 */
-		/** @{ */
-		void animateBackward();
-		void slideOut();
-		/** @} */
+        /**
+         * @brief Выдвинуть виджет
+         */
+        /** @{ */
+        void animateForward();
+        void slideIn();
+        /** @} */
 
-	protected:
-		/**
-		 * @brief Переопределяется, чтобы корректировать размер выкатываемого виджета
-		 */
-		bool eventFilter(QObject* _object, QEvent* _event);
+        /**
+         * @brief Задвинуть виджет
+         */
+        /** @{ */
+        void animateBackward();
+        void slideOut();
+        /** @} */
 
-	private:
-		/**
-		 * @brief Получить виджет, который нужно анимировать
-		 */
-		QWidget* widgetForSlide() const;
+    protected:
+        /**
+         * @brief Переопределяется, чтобы корректировать размер выкатываемого виджета
+         */
+        bool eventFilter(QObject* _object, QEvent* _event);
 
-	private:
-		/**
-		 * @brief Сторона из-за которой выкатывать виджет
-		 */
-		ApplicationSide m_side;
+    private:
+        /**
+         * @brief Получить виджет, который нужно анимировать
+         */
+        QWidget* widgetForSlide() const;
 
-		/**
-		 * @brief Необходимо ли декорировать фон
-		 */
-		bool m_decorateBackground;
+    private:
+        /**
+         * @brief Сторона из-за которой выкатывать виджет
+         */
+        ApplicationSide m_side;
 
-		/**
-		 * @brief Объект для анимирования выезжания
-		 */
-		QPropertyAnimation* m_animation;
+        /**
+         * @brief Необходимо ли декорировать фон
+         */
+        bool m_decorateBackground;
 
-		/**
-		 * @brief Помошник затемняющий фон под выезжающим виджетом
-		 */
-		SideSlideBackgroundDecorator* m_decorator;
-	};
+        /**
+         * @brief Объект для анимирования выезжания
+         */
+        QPropertyAnimation* m_animation;
+
+        /**
+         * @brief Помошник затемняющий фон под выезжающим виджетом
+         */
+        SideSlideBackgroundDecorator* m_decorator;
+    };
 }
 
 #endif // SIDESLIDEANIMATOR_H

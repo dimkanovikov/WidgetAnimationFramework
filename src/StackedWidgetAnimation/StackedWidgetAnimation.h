@@ -17,7 +17,7 @@
 #ifndef STACKEDWIDGETANIMATION_H
 #define STACKEDWIDGETANIMATION_H
 
-#include <WAF.h>
+#include "../WAF.h"
 
 class QColor;
 class QRect;
@@ -30,67 +30,55 @@ class QWidget;
  */
 namespace WAF
 {
-	/**
-	 * @brief Данные фасада
-	 */
-	class StackedWidgetAnimationPrivate;
+    /**
+     * @brief Данные фасада
+     */
+    class StackedWidgetAnimationPrivate;
 
-	/**
-	 * @brief Фасад доступа к анимациям
-	 */
-	class StackedWidgetAnimation
-	{
-	public:
-		/**
-		 * @brief Выкатить заданный виджет, смещая текущий активный
-		 */
-		static void slide(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
+    /**
+     * @brief Фасад доступа к анимациям
+     */
+    class StackedWidgetAnimation
+    {
+    public:
+        /**
+         * @brief Выкатить заданный виджет, смещая текущий активный
+         */
+        static void slide(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
 
-		/****/
+        /****/
 
-		/**
-		 * @brief Выкатить заданный виджет поверх текущего
-		 */
-		static void slideOverIn(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
+        /**
+         * @brief Выкатить заданный виджет поверх текущего
+         */
+        static void slideOverIn(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
 
-		/**
-		 * @brief Закатить заданный виджет поверх текущего
-		 */
-		static void slideOverOut(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
+        /**
+         * @brief Закатить заданный виджет поверх текущего
+         */
+        static void slideOverOut(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction);
 
-		/**
-		 * @brief Выкатить или закатить заданный виджет поверх текущего
-		 */
-		static void slideOver(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction, bool _in);
+        /**
+         * @brief Выкатить или закатить заданный виджет поверх текущего
+         */
+        static void slideOver(QStackedWidget* _container, QWidget* _widget, AnimationDirection _direction, bool _in);
 
-		/****/
+        /****/
 
-		/**
-		 * @brief Текущий виджет растворяется, а заданный виджет появляется
-		 */
-		static void fadeIn(QStackedWidget* _container, QWidget* _widget, const QColor& _fadeInColor);
+        /**
+         * @brief Текущий виджет растворяется, а заданный виджет появляется
+         */
+        static int fadeIn(QStackedWidget* _container, QWidget* _widget);
 
-		/****/
-
-		/**
-		 * @brief Заданный виджет раскрывается из заданной области, перекрывая текущий
-		 */
-		static void expand(QStackedWidget* _container, QWidget* _widget, const QRect& _rect, const QColor& _fadeColor);
-
-		/**
-		 * @brief Текущий виджет сворачивается в заданную область, скрываясь в заданном виджете
-		 */
-		static void collapse(QStackedWidget* _container, QWidget* _widget, const QRect& _rect, const QColor& _fadeColor);
-
-	private:
-		/**
-		 * @brief Данные
-		 */
-		/** @{ */
-		static StackedWidgetAnimationPrivate* m_pimpl;
-		static StackedWidgetAnimationPrivate* pimpl();
-		/** @} */
-	};
+    private:
+        /**
+         * @brief Данные
+         */
+        /** @{ */
+        static StackedWidgetAnimationPrivate* m_pimpl;
+        static StackedWidgetAnimationPrivate* pimpl();
+        /** @} */
+    };
 }
 
 #endif // STACKEDWIDGETANIMATION_H

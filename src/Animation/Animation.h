@@ -17,10 +17,11 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#include <WAF.h>
+#include "../WAF.h"
 
 class QColor;
 class QPoint;
+class QRect;
 class QWidget;
 
 
@@ -29,65 +30,86 @@ class QWidget;
  */
 namespace WAF
 {
-	/**
-	 * @brief Данные фасада
-	 */
-	class AnimationPrivate;
+    class AbstractAnimator;
+    class AnimationPrivate;
 
-	/**
-	 * @brief Фасад доступа к анимациям
-	 */
-	class Animation
-	{
-	public:
-		/**
-		 * @brief Выкатить виджет из-за стороны приложения
-		 */
-		static void sideSlideIn(QWidget* _widget, ApplicationSide _side = LeftSide, bool _decorateBackground = true);
+    /**
+     * @brief Фасад доступа к анимациям
+     */
+    class Animation
+    {
+    public:
+        /**
+         * @brief Выкатить виджет из-за стороны приложения
+         */
+        static int sideSlideIn(QWidget* _widget, ApplicationSide _side = LeftSide, bool _decorateBackground = true);
 
-		/**
-		 * @brief Закатить виджет из-за стороны приложения
-		 */
-		static void sideSlideOut(QWidget* _widget, ApplicationSide _side = LeftSide, bool _decorateBackground = true);
+        /**
+         * @brief Закатить виджет из-за стороны приложения
+         */
+        static int sideSlideOut(QWidget* _widget, ApplicationSide _side = LeftSide, bool _decorateBackground = true);
 
-		/**
-		 * @brief Выкатить/закатить виджет из-за стороны приложения
-		 */
-		static void sideSlide(QWidget* _widget, ApplicationSide _side = LeftSide, bool _decorateBackground = true, bool _in = true);
+        /**
+         * @brief Выкатить/закатить виджет из-за стороны приложения
+         */
+        static int sideSlide(QWidget* _widget, ApplicationSide _side = LeftSide, bool _decorateBackground = true, bool _in = true);
 
-		/****/
+        /****/
 
-		/**
-		 * @brief Выкатить виджет
-		 */
-		static void slideIn(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true);
+        /**
+         * @brief Выкатить виджет
+         */
+        static int slideIn(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true, bool _fixStartSize = false);
 
-		/**
-		 * @brief Закатить виджет
-		 */
-		static void slideOut(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true);
+        /**
+         * @brief Закатить виджет
+         */
+        static int slideOut(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true, bool _fixStartSize = false);
 
-		/**
-		 * @brief Выкатить/закатить виджет
-		 */
-		static void slide(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true, bool _in = true);
+        /**
+         * @brief Выкатить/закатить виджет
+         */
+        static int slide(QWidget* _widget, AnimationDirection _direction, bool _fixBackground = true, bool _fixStartSize = false, bool _in = true);
 
-		/****/
+        /****/
 
-		/**
-		 * @brief Заполнить цветовым кругом
-		 */
-		static void circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _in = true);
+        /**
+         * @brief Заполнить/очистить цветовым кругом
+         */
+        static int circleFillIn(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor);
 
-	private:
-		/**
-		 * @brief Данные
-		 */
-		/** @{ */
-		static AnimationPrivate* m_pimpl;
-		static AnimationPrivate* pimpl();
-		/** @} */
-	};
+        /**
+         * @brief Заполнить/очистить цветовым кругом
+         */
+        static int circleFillOut(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor);
+
+        /**
+         * @brief Заполнить/очистить цветовым кругом
+         */
+        static int circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _in = true);
+
+        /****/
+
+        /**
+         * @brief Вытолкнуть заданную область наверх, затемнив остальную часть экрана
+         */
+        static int expand(QWidget* _widget, const QRect& _expandRect, const QColor& _fillColor, bool _in = true);
+
+    private:
+        /**
+         * @brief Запустить заданную анимацию в заданном направлении
+         */
+        static int runAnimation(AbstractAnimator* _animator, bool _in);
+
+    private:
+        /**
+         * @brief Данные
+         */
+        /** @{ */
+        static AnimationPrivate* m_pimpl;
+        static AnimationPrivate* pimpl();
+        /** @} */
+    };
 }
 
 #endif // ANIMATION_H

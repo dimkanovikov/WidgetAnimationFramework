@@ -15,8 +15,8 @@
  */
 
 
-#ifndef CIRCLEFILLDECORATOR_H
-#define CIRCLEFILLDECORATOR_H
+#ifndef EXPANDDECORATOR_H
+#define EXPANDDECORATOR_H
 
 #include <QWidget>
 
@@ -27,29 +27,29 @@
 namespace WAF
 {
 	/**
-	 * @brief Класс рисующий круг, заполняющий пространство
+	 * @brief Класс рисующий выезжание области, с последующим заполнением пространства
 	 */
-	class CircleFillDecorator : public QWidget
+	class ExpandDecorator : public QWidget
 	{
 		Q_OBJECT
 
-		Q_PROPERTY(int radius READ radius WRITE setRadius)
+		Q_PROPERTY(QRect expandRect READ expandRect WRITE setExpandRect)
 
 	public:
-		explicit CircleFillDecorator(QWidget* _parent);
-
-		/**
-		 * @brief Установить точку центра круга
-		 */
-		void setStartPoint(const QPoint& _point);
+		explicit ExpandDecorator(QWidget* _parent);
 
 		/**
 		 * @brief Радиус рисуемой окружности
 		 */
 		/** @{ */
-		int radius() const;
-		void setRadius(int _radius);
+		QRect expandRect() const;
+		void setExpandRect(QRect _expandRect);
 		/** @} */
+
+		/**
+		 * @brief Сохранить изображение расширяемой области, для последующего его смещения
+		 */
+		void grabExpandRect();
 
 		/**
 		 * @brief Установить цвет заливки
@@ -66,12 +66,12 @@ namespace WAF
 		/**
 		 * @brief Точка из которой начинается заполенние
 		 */
-		QPoint m_startPoint;
+		QPixmap m_expandRectPixmap;
 
 		/**
 		 * @brief Прозрачность изображения виджета для прорисовки
 		 */
-		int m_radius;
+		QRect m_expandRect;
 
 		/**
 		 * @brief Цвет растворения
@@ -80,4 +80,4 @@ namespace WAF
 	};
 }
 
-#endif // CIRCLEFILLDECORATOR_H
+#endif // EXPANDDECORATOR_H

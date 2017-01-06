@@ -17,8 +17,8 @@
 #ifndef STACKEDWIDGETSLIDEOVERANIMATOR_H
 #define STACKEDWIDGETSLIDEOVERANIMATOR_H
 
-#include <WAF.h>
-#include <AbstractAnimator.h>
+#include "../../WAF.h"
+#include "../../AbstractAnimator.h"
 
 class QPropertyAnimation;
 class QStackedWidget;
@@ -29,73 +29,83 @@ class QStackedWidget;
  */
 namespace WAF
 {
-	class StackedWidgetSlideOverDecorator;
+    class StackedWidgetSlideOverDecorator;
 
 
-	/**
-	 * @brief Аниматор выдвижения виджета из стека с наезжанием на текущий виджет
-	 */
-	class StackedWidgetSlideOverAnimator : public AbstractAnimator
-	{
-		Q_OBJECT
+    /**
+     * @brief Аниматор выдвижения виджета из стека с наезжанием на текущий виджет
+     */
+    class StackedWidgetSlideOverAnimator : public AbstractAnimator
+    {
+        Q_OBJECT
 
-	public:
-		explicit StackedWidgetSlideOverAnimator(QStackedWidget* _container, QWidget* _widgetForSlide);
+    public:
+        explicit StackedWidgetSlideOverAnimator(QStackedWidget* _container, QWidget* _widgetForSlide);
 
-		/**
-		 * @brief Установить направление выдвижения
-		 */
-		void setAnimationDirection(AnimationDirection _direction);
+        /**
+         * @brief Обновить виджет поверх которого будем выезжать
+         */
+        void updateCoveredWidget();
 
-		/**
-		 * @brief Выдвинуть виджет
-		 */
-		/** @{ */
-		void animateForward();
-		void slideOverIn();
-		/** @} */
+        /**
+         * @brief Установить направление выдвижения
+         */
+        void setAnimationDirection(AnimationDirection _direction);
 
-		/**
-		 * @brief Задвинуть виджет
-		 */
-		/** @{ */
-		void animateBackward();
-		void slideOverOut();
-		/** @} */
+        /**
+         * @brief Длительность анимации
+         */
+        int animationDuration() const;
 
-	protected:
-		/**
-		 * @brief Переопределяется, чтобы корректировать позицию перекрывающего виджета
-		 */
-		bool eventFilter(QObject* _object, QEvent* _event);
+        /**
+         * @brief Выдвинуть виджет
+         */
+        /** @{ */
+        void animateForward();
+        void slideOverIn();
+        /** @} */
 
-	private:
-		/**
-		 * @brief Получить виджет, который нужно анимировать
-		 */
-		QWidget* widgetForSlide() const;
+        /**
+         * @brief Задвинуть виджет
+         */
+        /** @{ */
+        void animateBackward();
+        void slideOverOut();
+        /** @} */
 
-	private:
-		/**
-		 * @brief Направление, по которому выкатывать виджет
-		 */
-		AnimationDirection m_direction;
+    protected:
+        /**
+         * @brief Переопределяется, чтобы корректировать позицию перекрывающего виджета
+         */
+        bool eventFilter(QObject* _object, QEvent* _event);
 
-		/**
-		 * @brief Виджет, поверх которого выкатываем текущий
-		 */
-		QWidget* m_coveredWidget;
+    private:
+        /**
+         * @brief Получить виджет, который нужно анимировать
+         */
+        QStackedWidget* stackedWidget() const;
 
-		/**
-		 * @brief Помошники
-		 */
-		StackedWidgetSlideOverDecorator* m_decorator;
+    private:
+        /**
+         * @brief Направление, по которому выкатывать виджет
+         */
+        AnimationDirection m_direction;
 
-		/**
-		 * @brief Объекты для анимирования выезжания
-		 */
-		QPropertyAnimation* m_animation;
-	};
+        /**
+         * @brief Виджет, поверх которого выкатываем текущий
+         */
+        QWidget* m_coveredWidget;
+
+        /**
+         * @brief Помошники
+         */
+        StackedWidgetSlideOverDecorator* m_decorator;
+
+        /**
+         * @brief Объекты для анимирования выезжания
+         */
+        QPropertyAnimation* m_animation;
+    };
 }
 
 #endif // STACKEDWIDGETSLIDEOVERANIMATOR_H

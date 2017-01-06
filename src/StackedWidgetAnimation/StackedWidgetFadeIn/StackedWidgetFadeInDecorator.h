@@ -37,7 +37,7 @@ namespace WAF
 		Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
 
 	public:
-		explicit StackedWidgetFadeInDecorator(QWidget* _parent, QWidget* _widgetForGrab, const QColor& _fadeInColor = Qt::white);
+		explicit StackedWidgetFadeInDecorator(QWidget* _parent, QWidget* _fadeWidget);
 
 		/**
 		 * @brief Свойство прозрачности изображения виджета для прорисовки
@@ -60,13 +60,19 @@ namespace WAF
 		/**
 		 * @brief Сохранить изображение виджета для прорисовки
 		 */
-		void grabWidget();
+		void grabFadeWidget();
 
 	protected:
 		/**
 		 * @brief Переопределяется для прорисовки декорации
 		 */
 		void paintEvent(QPaintEvent* _event);
+
+	private:
+		/**
+		 * @brief Сохранить изображение заданного виджета
+		 */
+		QPixmap grabWidget(QWidget* _widgetForGrab);
 
 	private:
 		/**
@@ -77,17 +83,17 @@ namespace WAF
 		/**
 		 * @brief Виджет, который будем рисовать
 		 */
-		QWidget* m_widgetForGrab;
+		QWidget* m_fadeWidget;
 
 		/**
-		 * @brief Цвет растворения
+		 * @brief Изображение контейнера
 		 */
-		QColor m_fadeInColor;
+		QPixmap m_containerPixmap;
 
 		/**
-		 * @brief Фоновое изображение
+		 * @brief Изображение появляющегося виджета
 		 */
-		QPixmap m_foreground;
+		QPixmap m_fadeWidgetPixmap;
 	};
 }
 

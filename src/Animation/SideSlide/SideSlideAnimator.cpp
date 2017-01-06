@@ -62,6 +62,11 @@ void SideSlideAnimator::setDecorateBackground(bool _decorate)
 	}
 }
 
+int SideSlideAnimator::animationDuration() const
+{
+	return m_animation->duration();
+}
+
 void SideSlideAnimator::animateForward()
 {
 	slideIn();

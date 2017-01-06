@@ -51,11 +51,21 @@ StackedWidgetSlideOverAnimator::StackedWidgetSlideOverAnimator(QStackedWidget* _
 	});
 }
 
+void StackedWidgetSlideOverAnimator::updateCoveredWidget()
+{
+	m_coveredWidget = stackedWidget()->currentWidget();
+}
+
 void StackedWidgetSlideOverAnimator::setAnimationDirection(WAF::AnimationDirection _direction)
 {
 	if (m_direction != _direction) {
 		m_direction = _direction;
 	}
+}
+
+int StackedWidgetSlideOverAnimator::animationDuration() const
+{
+	return m_animation->duration();
 }
 
 void StackedWidgetSlideOverAnimator::animateForward()
@@ -84,22 +94,22 @@ void StackedWidgetSlideOverAnimator::slideOverIn()
 	switch (m_direction) {
 		default:
 		case WAF::FromLeftToRight: {
-			startPos.setX(-1 * widgetForSlide()->width());
+			startPos.setX(-1 * stackedWidget()->width());
 			break;
 		}
 
 		case WAF::FromRightToLeft: {
-			startPos.setX(widgetForSlide()->width());
+			startPos.setX(stackedWidget()->width());
 			break;
 		}
 
 		case WAF::FromTopToBottom: {
-			startPos.setY(-1 * widgetForSlide()->height());
+			startPos.setY(-1 * stackedWidget()->height());
 			break;
 		}
 
 		case WAF::FromBottomToTop: {
-			startPos.setY(widgetForSlide()->height());
+			startPos.setY(stackedWidget()->height());
 			break;
 		}
 	}
@@ -159,22 +169,22 @@ void StackedWidgetSlideOverAnimator::slideOverOut()
 	switch (m_direction) {
 		default:
 		case WAF::FromLeftToRight: {
-			finalPos.setX(-1 * widgetForSlide()->width());
+			finalPos.setX(-1 * stackedWidget()->width());
 			break;
 		}
 
 		case WAF::FromRightToLeft: {
-			finalPos.setX(widgetForSlide()->width());
+			finalPos.setX(stackedWidget()->width());
 			break;
 		}
 
 		case WAF::FromTopToBottom: {
-			finalPos.setY(-1 * widgetForSlide()->height());
+			finalPos.setY(-1 * stackedWidget()->height());
 			break;
 		}
 
 		case WAF::FromBottomToTop: {
-			finalPos.setY(widgetForSlide()->height());
+			finalPos.setY(stackedWidget()->height());
 			break;
 		}
 	}
@@ -182,7 +192,7 @@ void StackedWidgetSlideOverAnimator::slideOverOut()
 	//
 	// Делаем виджет, над которым мы выкатывали текущий, активным
 	//
-	if (QStackedWidget* container = qobject_cast<QStackedWidget*>(widgetForSlide())) {
+	if (QStackedWidget* container = qobject_cast<QStackedWidget*>(stackedWidget())) {
 		container->setCurrentWidget(m_coveredWidget);
 	}
 
@@ -217,15 +227,16 @@ void StackedWidgetSlideOverAnimator::slideOverOut()
 
 bool StackedWidgetSlideOverAnimator::eventFilter(QObject* _object, QEvent* _event)
 {
-	if (_object == widgetForSlide()
-		&& _event->type() == QEvent::Resize) {
+	if (_object == stackedWidget()
+		&& _event->type() == QEvent::Resize
+		&& m_decorator->isVisible()) {
 		m_decorator->grabWidget();
 	}
 
 	return QObject::eventFilter(_object, _event);
 }
 
-QWidget* StackedWidgetSlideOverAnimator::widgetForSlide() const
+QStackedWidget* StackedWidgetSlideOverAnimator::stackedWidget() const
 {
-	return qobject_cast<QWidget*>(parent());
+	return qobject_cast<QStackedWidget*>(parent());
 }

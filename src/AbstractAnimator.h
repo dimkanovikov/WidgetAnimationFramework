@@ -35,6 +35,11 @@ namespace WAF
 		explicit AbstractAnimator(QObject* _parent = 0) : QObject(_parent) {}
 
 		/**
+		 * @brief Длительность анимации
+		 */
+		virtual int animationDuration() const = 0;
+
+		/**
 		 * @brief Выполнить прямую анимацию
 		 */
 		virtual void animateForward() = 0;
