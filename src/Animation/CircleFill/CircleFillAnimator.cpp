@@ -1,6 +1,8 @@
 #include "CircleFillAnimator.h"
 #include "CircleFillDecorator.h"
 
+#include <cmath>
+
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 
@@ -15,16 +17,14 @@ CircleFillAnimator::CircleFillAnimator(QWidget* _widgetForFill) :
 {
     Q_ASSERT(_widgetForFill);
 
-    m_animation->setDuration(800);
+    m_animation->setDuration(500);
 
     m_decorator->setAttribute(Qt::WA_TransparentForMouseEvents);
     m_decorator->hide();
 
     connect(m_animation, &QPropertyAnimation::finished, [=] {
         setAnimatedStopped();
-        if (isAnimatedBackward()) {
-            m_decorator->hide();
-        } else {
+        if (m_hideAfterFinish) {
             hideDecorator();
         }
     });
@@ -38,6 +38,11 @@ void CircleFillAnimator::setStartPoint(const QPoint& _point)
 void CircleFillAnimator::setFillColor(const QColor& _color)
 {
     m_decorator->setFillColor(_color);
+}
+
+void CircleFillAnimator::setHideAfterFinish(bool _hide)
+{
+    m_hideAfterFinish = _hide;
 }
 
 int CircleFillAnimator::animationDuration() const
@@ -62,7 +67,7 @@ void CircleFillAnimator::fillIn()
     // Определим стартовые и финальные позиции для декораций
     //
     int startRadius = 0;
-    int finalRadius = widgetForFill()->height() + widgetForFill()->width();
+    int finalRadius = sqrt(widgetForFill()->height()*widgetForFill()->height() + widgetForFill()->width()*widgetForFill()->width());
 
     //
     // Позиционируем декораторы
@@ -110,7 +115,7 @@ void CircleFillAnimator::fillOut()
     //
     // Определим стартовые и финальные позиции для декораций
     //
-    int startRadius = widgetForFill()->height() + widgetForFill()->width();
+    int startRadius = sqrt(widgetForFill()->height()*widgetForFill()->height() + widgetForFill()->width()*widgetForFill()->width());
     int finalRadius = 0;
 
     //

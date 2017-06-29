@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
 	// Соединяем вкладки со страницами
 	//
 	QObject::connect(tabs, &QTabBar::currentChanged, [=] (int _showWidgetIndex) {
-		WAF::StackedWidgetAnimation::fadeIn(pages, pages->widget(_showWidgetIndex), pages->palette().window().color());
+        WAF::StackedWidgetAnimation::fadeIn(pages, pages->widget(_showWidgetIndex));
 	});
 
 	//

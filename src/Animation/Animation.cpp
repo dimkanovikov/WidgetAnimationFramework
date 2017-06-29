@@ -103,19 +103,19 @@ int Animation::slide(QWidget* _widget, WAF::AnimationDirection _direction, bool 
     return runAnimation(animator, _in);
 }
 
-int Animation::circleFillIn(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor)
+int Animation::circleFillIn(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _hideAfterFinish)
 {
     const bool IN = true;
-    return circleFill(_widget, _startPoint, _fillColor, IN);
+    return circleFill(_widget, _startPoint, _fillColor, _hideAfterFinish, IN);
 }
 
-int Animation::circleFillOut(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor)
+int Animation::circleFillOut(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _hideAfterFinish)
 {
     const bool OUT = false;
-    return circleFill(_widget, _startPoint, _fillColor, OUT);
+    return circleFill(_widget, _startPoint, _fillColor, _hideAfterFinish, OUT);
 }
 
-int Animation::circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _in)
+int Animation::circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _hideAfterFinish, bool _in)
 {
     const AnimationPrivate::AnimatorType animatorType = AnimationPrivate::CircleFill;
     AbstractAnimator* animator = 0;
@@ -124,11 +124,13 @@ int Animation::circleFill(QWidget* _widget, const QPoint& _startPoint, const QCo
         if (CircleFillAnimator* circleFillAnimator = qobject_cast<CircleFillAnimator*>(animator)) {
             circleFillAnimator->setStartPoint(_startPoint);
             circleFillAnimator->setFillColor(_fillColor);
+            circleFillAnimator->setHideAfterFinish(_hideAfterFinish);
         }
     } else {
         CircleFillAnimator* circleFillAnimator = new CircleFillAnimator(_widget);
         circleFillAnimator->setStartPoint(_startPoint);
         circleFillAnimator->setFillColor(_fillColor);
+        circleFillAnimator->setHideAfterFinish(_hideAfterFinish);
         animator = circleFillAnimator;
 
         pimpl()->saveAnimator(_widget, animator, animatorType);

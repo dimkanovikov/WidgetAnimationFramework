@@ -51,6 +51,11 @@ namespace WAF
         void setFillColor(const QColor& _color);
 
         /**
+         * @brief Скрывать ли декоратор после окончания анимации
+         */
+        void setHideAfterFinish(bool _hide);
+
+        /**
          * @brief Длительность анимации
          */
         int animationDuration() const;
@@ -92,6 +97,11 @@ namespace WAF
          * @brief Объект для анимирования декоратора
          */
         QPropertyAnimation* m_animation;
+
+        /**
+         * @brief Скрывать ли декоратор после завершения анимации
+         */
+        bool m_hideAfterFinish = true;
     };
 }
 

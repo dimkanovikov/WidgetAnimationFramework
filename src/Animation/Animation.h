@@ -76,17 +76,17 @@ namespace WAF
         /**
          * @brief Заполнить/очистить цветовым кругом
          */
-        static int circleFillIn(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor);
+        static int circleFillIn(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _hideAfterFinish = true);
 
         /**
          * @brief Заполнить/очистить цветовым кругом
          */
-        static int circleFillOut(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor);
+        static int circleFillOut(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _hideAfterFinish = true);
 
         /**
          * @brief Заполнить/очистить цветовым кругом
          */
-        static int circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _in = true);
+        static int circleFill(QWidget* _widget, const QPoint& _startPoint, const QColor& _fillColor, bool _hideAfterFinish = true, bool _in = true);
 
         /****/
 

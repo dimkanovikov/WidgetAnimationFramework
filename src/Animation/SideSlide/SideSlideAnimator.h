@@ -1,21 +1,5 @@
-/*
- * Copyright (C) 2015  Dimka Novikov, to@dimkanovikov.pro
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * Full license: https://github.com/dimkanovikov/WidgetAnimationFramework/blob/master/LICENSE
- */
-
-#ifndef SIDESLIDEANIMATOR_H
-#define SIDESLIDEANIMATOR_H
+#ifndef SIDESLIDEANIMATOR2_H
+#define SIDESLIDEANIMATOR2_H
 
 #include "../../WAF.h"
 #include "../../AbstractAnimator.h"
@@ -28,7 +12,7 @@ class QPropertyAnimation;
  */
 namespace WAF
 {
-    class SideSlideBackgroundDecorator;
+    class SideSlideDecorator;
 
 
     /**
@@ -96,15 +80,15 @@ namespace WAF
         bool m_decorateBackground;
 
         /**
-         * @brief Объект для анимирования выезжания
-         */
-        QPropertyAnimation* m_animation;
-
-        /**
          * @brief Помошник затемняющий фон под выезжающим виджетом
          */
-        SideSlideBackgroundDecorator* m_decorator;
+        SideSlideDecorator* m_decorator = nullptr;
+
+        /**
+         * @brief Объект для анимирования выезжания
+         */
+        QPropertyAnimation* m_animation = nullptr;
     };
 }
 
-#endif // SIDESLIDEANIMATOR_H
+#endif // SIDESLIDEANIMATOR2_H

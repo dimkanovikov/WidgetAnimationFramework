@@ -13,8 +13,6 @@ HEADERS += \
     ../src/AbstractAnimator.h \
     ../src/Animation/Animation.h \
     ../src/Animation/AnimationPrivate.h \
-    ../src/Animation/SideSlide/SideSlideAnimator.h \
-    ../src/Animation/SideSlide/SideSlideBackgroundDecorator.h \
     ../src/Animation/Slide/SlideAnimator.h \
     ../src/Animation/Slide/SlideForegroundDecorator.h \
     ../src/StackedWidgetAnimation/StackedWidgetAnimation.h \
@@ -29,12 +27,12 @@ HEADERS += \
     ../src/Animation/CircleFill/CircleFillAnimator.h \
     ../src/Animation/CircleFill/CircleFillDecorator.h \
     ../src/Animation/Expand/ExpandAnimator.h \
-    ../src/Animation/Expand/ExpandDecorator.h
+    ../src/Animation/Expand/ExpandDecorator.h \
+    ../src/Animation/SideSlide/SideSlideDecorator.h \
+    ../src/Animation/SideSlide/SideSlideAnimator.h
 
 SOURCES += main.cpp \
     ../src/Animation/Animation.cpp \
-    ../src/Animation/SideSlide/SideSlideAnimator.cpp \
-    ../src/Animation/SideSlide/SideSlideBackgroundDecorator.cpp \
     ../src/Animation/Slide/SlideAnimator.cpp \
     ../src/Animation/Slide/SlideForegroundDecorator.cpp \
     ../src/StackedWidgetAnimation/StackedWidgetAnimation.cpp \
@@ -47,7 +45,9 @@ SOURCES += main.cpp \
     ../src/Animation/CircleFill/CircleFillAnimator.cpp \
     ../src/Animation/CircleFill/CircleFillDecorator.cpp \
     ../src/Animation/Expand/ExpandAnimator.cpp \
-    ../src/Animation/Expand/ExpandDecorator.cpp
+    ../src/Animation/Expand/ExpandDecorator.cpp \
+    ../src/Animation/SideSlide/SideSlideDecorator.cpp \
+    ../src/Animation/SideSlide/SideSlideAnimator.cpp
 
 RESOURCES += \
     resources/resources.qrc
