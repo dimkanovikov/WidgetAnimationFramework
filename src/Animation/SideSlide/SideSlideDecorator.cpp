@@ -27,7 +27,7 @@ SideSlideDecorator::SideSlideDecorator(QWidget* _parent) :
     resize(maximumSize());
 
     m_timeline.setDuration(260);
-    m_timeline.setUpdateInterval(10);
+    m_timeline.setUpdateInterval(40);
     m_timeline.setEasingCurve(QEasingCurve::OutQuad);
     m_timeline.setStartFrame(0);
     m_timeline.setEndFrame(10000);
@@ -39,7 +39,7 @@ SideSlideDecorator::SideSlideDecorator(QWidget* _parent) :
     //
     connect(&m_timeline, &QTimeLine::frameChanged, [=](int _value){
         m_decorationColor = QColor(0, 0, 0, _value/100);
-        repaint();
+        update();
     });
 }
 
@@ -55,7 +55,7 @@ void SideSlideDecorator::grabParent()
     // В андройде Qt не умеет рисовать прозрачные виджеты https://bugreports.qt.io/browse/QTBUG-43635
     // поэтому сохранем картинку с изображением подложки
     //
-    m_background = parentWidget()->grab();
+    m_backgroundPixmap = parentWidget()->grab();
 #endif
 }
 
@@ -78,6 +78,7 @@ void SideSlideDecorator::setSlidePos(const QPoint& _pos)
 {
     if (m_slidePos != _pos) {
         m_slidePos = _pos;
+        update();
     }
 }
 
